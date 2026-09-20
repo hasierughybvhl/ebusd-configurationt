@@ -1,4 +1,4 @@
-*~
-node_modules/
-out*
-dist/
+# Windows/macOS-Datenmüll, der beim Kopieren/Anschauen entstehen kann
+Thumbs.db
+desktop.ini
+.DS_Store

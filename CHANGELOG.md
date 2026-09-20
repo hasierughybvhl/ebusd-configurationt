@@ -1,0 +1,54 @@
+# Änderungsprotokoll
+
+Alle nennenswerten Änderungen an diesem persönlichen Konfigurations-Repository
+werden hier festgehalten. Format angelehnt an
+[Keep a Changelog](https://keepachangelog.com/de/1.0.0/), Versionsnummern nach
+[Semantic Versioning](https://semver.org/lang/de/) (`MAJOR.MINOR.PATCH`):
+
+- **MAJOR** steigt, wenn sich etwas ändert, das ein Neu-Kopieren aller
+  Dateien erfordert (z. B. andere Ordnerstruktur).
+- **MINOR** steigt, wenn Geräte-Dateien hinzukommen oder ersetzt werden.
+- **PATCH** steigt bei kleinen Korrekturen an bestehenden Dateien.
+
+## [1.0.0] - 2026-09-20
+
+### Erstellt
+- Repository von [john30/ebusd-configuration](https://github.com/john30/ebusd-configuration)
+  geforkt und auf die eigene Anlage zugeschnitten.
+- Ausgangsbasis: Commit `9c3ed3a` (2026-06-09) des Originalprojekts, darin
+  der "archived"-Schnappschuss (eingefrorene, klassische CSV-Dateien,
+  Stand-Version 2.1) – dieser wird verwendet, weil das ebusd-Add-on hier
+  mit lokalen CSV-Dateien (`--configpath`) statt der neuen TypeSpec-basierten
+  CDN-Auslieferung läuft.
+- Sprachvariante **Englisch** (`archived/en/vaillant`) gewählt statt Deutsch,
+  weil die deutsche Variante die benötigte Datei `76.vwz.csv`
+  (Warmwasser-/Speichermodul VWZ) nicht enthält. Die technischen
+  Feldnamen (z. B. `Hc1FlowTemp`) sind in beiden Sprachvarianten identisch,
+  nur die Kommentare unterscheiden sich.
+
+### Behalten (9 Dateien, Ordner `vaillant/`)
+- `scan.csv`, `general.csv`, `broadcast.csv`, `_templates.csv` – gemeinsame
+  Basisdateien.
+- `08.hmu.csv` – Heizungssteuerung HMU00 (SW0607, HW5103).
+- `15.720.csv` – Raumregler VRC 700 (72000, SW0122, HW7703). Im Original
+  eine Verknüpfung auf `15.700.csv` (Vaillant liefert für diese Geräteversion
+  keine eigene Datei, sondern verwendet dieselbe wie 15.700) – hier als
+  eigenständige Datei mit dem vollen Inhalt abgelegt.
+- `76.vwz.csv` – Warmwasser-/Speichermodul VWZIO (SW0606, HW5103).
+- `hcmode.inc`, `errors.inc` – von den drei Gerätedateien per `!include`
+  nachgeladene Zusatzdefinitionen (Betriebsarten- und Fehlercode-Texte).
+  Diese beiden fehlten in der vorher verwendeten, nicht offiziellen
+  Dateiquelle – das war die Ursache der alten `ERR: element not found`- bzw.
+  Include-Fehler im ebusd-Log.
+
+### Entfernt
+- `src/` – TypeSpec-Quelldateien für alle Hersteller (nur zum Erzeugen der
+  CDN-Dateien relevant, nicht für den lokalen Betrieb).
+- `archived/` – restliche Konfigurationsdateien aller anderen Hersteller
+  (encon, kromschroeder, ochsner, tem, wolf) sowie alle nicht benötigten
+  Vaillant-Gerätedateien; die 9 benötigten Dateien wurden vorher nach
+  `vaillant/` übernommen.
+- `.github/`, `.devcontainer/`, `.vscode/`, `utils/`, `package.json`,
+  `guidelines.md`, `ChangeLog.md` (Original) – Entwickler-/Build-Werkzeuge des
+  Originalprojekts, für die reine Nutzung als Konfigurationsablage nicht
+  gebraucht.
