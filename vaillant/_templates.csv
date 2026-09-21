@@ -1,15 +1,22 @@
 # template name,type / templates,divider / values,unit,comment
+temp,D2C,,°C,temperature
+temp0,UCH,,°C,temperature
+temp1,D1C,,°C,temperature
 temps,SCH,,°C,temperature
 temps2,SIN,,°C,temperature
 tempv,EXP,,°C,temperature
+temp2,D2B,,°C,temperature
+percent0,UCH,,%,percentage
 press,FLT,,bar,pressure
 pressv,EXP,,bar,pressure
 date,HDA:3,,,date
+bdate,BDA,,,date
 day,BDY,,,weekday
 daysel,UCH,0=selected;1=Mo-Fr;2=Sa-Su;3=Mo-Su,,days
 days,UCH,,,days
 time,VTI,,,time
 time2,VTM,,,time
+btime,BTI,,,time
 minutes,ULG,120,min,minutes
 minutes4,ULG,,min,minutes
 minutes0,UCH,,min,minutes
@@ -99,9 +106,9 @@ shortphone,STR:6,,,phone number
 mamode,UIN,0=circulation;1=dryer;2=zone;3=legiopump,,
 offmode,UIN,0=eco;1=night,,
 rcmode,UIN,0=off;1=modulating;2=thermostat,,
-slotIndex,UCH,,,index of a time slot, 0-based
+slotIndex,UCH,,,"index of a time slot, 0-based"
 slotCount,UCH,,,number of slots on a day
-slotCountWeek,IGN:1;slotCount;slotCount;slotCount;slotCount;slotCount;slotCount;slotCount;IGN:1,,,number of slots per weekday, Mo-Su
+slotCountWeek,IGN:1;slotCount;slotCount;slotCount;slotCount;slotCount;slotCount;slotCount;IGN:1,,,"number of slots per weekday, Mo-Su"
 slotTimeFrame,HTM;HTM,,,timeslot from/until
 slotTemp,UIN,10,°C,desired temperature of a slot
 wTimeSlotWithTemp,slotIndex;slotCount;slotTimeFrame;slotTemp,,,complete slot for writing with target temperature
