@@ -10,6 +10,20 @@ werden hier festgehalten. Format angelehnt an
 - **MINOR** steigt, wenn Geräte-Dateien hinzukommen oder ersetzt werden.
 - **PATCH** steigt bei kleinen Korrekturen an bestehenden Dateien.
 
+## [1.0.2] - 2026-09-21
+
+### Behoben
+- `ccTimer.Monday` bis `ccTimer.Sunday` (Schaltuhr-Zeitfenster des
+  Heizkreises) in `15.720.csv` deaktiviert. Bei dieser Anlage liefern diese
+  7 Felder bei jedem Abfragen nur eine leere Antwort statt Daten (Protokoll:
+  `ERR: invalid position` bei jedem `poll-read ccTimer.*`). Da jedes Feld aus
+  3 Zeitfenstern (je "von"/"bis") besteht, erzeugte das pro Wochentag 6
+  dauerhaft leere Entitäten in Home Assistant (`CcTimer_<Tag> from`/`to`,
+  insgesamt 42 Stück) – das war ein Teil der in der Geräteansicht
+  auffälligen doppelten/leeren Entitäten. Die Zeilen bleiben als Kommentar
+  in der Datei stehen (nicht gelöscht), falls sich das später doch klären
+  lässt.
+
 ## [1.0.1] - 2026-09-21
 
 ### Behoben

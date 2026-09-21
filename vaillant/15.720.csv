@@ -259,13 +259,16 @@ r;w,,hwcTimer.Sunday,timer hwc sunday,,,,06,,,slot1-3,,,
 # Zeitprogramm circulation pump,,,,,,,,,,,,,
 *r,,,,,,B524,03010002,,,IGN:1,,,whether timeslot is valid
 *w,,,,,,B524,04010002,,,,,,
-r;w,,ccTimer.Monday,timer cc monday,,,,00,,,slot1-3,,,
-r;w,,ccTimer.Tuesday,timer cc tuesday,,,,01,,,slot1-3,,,
-r;w,,ccTimer.Wednesday,timer cc wednesday,,,,02,,,slot1-3,,,
-r;w,,ccTimer.Thursday,timer cc thursday,,,,03,,,slot1-3,,,
-r;w,,ccTimer.Friday,timer cc friday,,,,04,,,slot1-3,,,
-r;w,,ccTimer.Saturday,timer cc saturday,,,,05,,,slot1-3,,,
-r;w,,ccTimer.Sunday,timer cc sunday,,,,06,,,slot1-3,,,
+# ccTimer.* deaktiviert: liefert bei dieser Anlage nie einen Wert (ERR: invalid
+# position bei jedem Poll, siehe ebusd-Log) und erzeugte dadurch pro Wochentag
+# 6 dauerhaft leere "CcTimer_<Tag> from/to"-Entitäten in Home Assistant.
+#r;w,,ccTimer.Monday,timer cc monday,,,,00,,,slot1-3,,,
+#r;w,,ccTimer.Tuesday,timer cc tuesday,,,,01,,,slot1-3,,,
+#r;w,,ccTimer.Wednesday,timer cc wednesday,,,,02,,,slot1-3,,,
+#r;w,,ccTimer.Thursday,timer cc thursday,,,,03,,,slot1-3,,,
+#r;w,,ccTimer.Friday,timer cc friday,,,,04,,,slot1-3,,,
+#r;w,,ccTimer.Saturday,timer cc saturday,,,,05,,,slot1-3,,,
+#r;w,,ccTimer.Sunday,timer cc sunday,,,,06,,,slot1-3,,,
 # timers zone 1,,,,,,,,,,,,,
 *r,,,,,,B524,03030002,,,IGN:1,,,whether timeslot is valid
 *w,,,,,,B524,04030002,,,,,,
