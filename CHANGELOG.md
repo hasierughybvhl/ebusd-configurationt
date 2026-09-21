@@ -10,6 +10,21 @@ werden hier festgehalten. Format angelehnt an
 - **MINOR** steigt, wenn Geräte-Dateien hinzukommen oder ersetzt werden.
 - **PATCH** steigt bei kleinen Korrekturen an bestehenden Dateien.
 
+## [1.0.1] - 2026-09-21
+
+### Behoben
+- Datei `76.vwz.csv` in `76.vwzio.csv` umbenannt (Inhalt unverändert). Grund:
+  laut ebusd-Dokumentation baut ebusd den erwarteten Dateinamen automatisch
+  aus der gemeldeten Scan-ID (`VWZIO` → klein geschrieben, keine
+  abschließenden Nullen zum Abschneiden → `vwzio`). Der Name `76.vwz.csv`
+  hätte nicht zuverlässig gefunden werden können. Im offiziellen Projekt
+  existiert dieselbe Datei nur als Verweis `src/vaillant/76.vwzio.tsp` auf
+  `76.vwz.tsp` – der eingefrorene CSV-Schnappschuss (archived, Version 2.1)
+  hatte diesen Verweis nie nachgezogen.
+- README ergänzt: vollständige Geräteliste (VRC 720/1, VWZ MEH 97/6,
+  recoVAIR VAR 360/4 E, VWL 75/6 A 230V S2) inkl. Status, welche Geräte
+  bereits über einen echten Scan bestätigt sind und welche noch nicht.
+
 ## [1.0.0] - 2026-09-20
 
 ### Erstellt

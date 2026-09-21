@@ -26,9 +26,9 @@ mehr braucht meine Anlage nicht:
 | Datei | Wofür |
 |---|---|
 | `scan.csv`, `general.csv`, `broadcast.csv`, `_templates.csv` | Basis-Dateien, die ebusd für **jedes** Vaillant-Gerät braucht |
-| `08.hmu.csv` | Heizungssteuerung (Scan-Ergebnis: `HMU00`, SW `0607`, HW `5103`) |
-| `15.720.csv` | Raumregler VRC 700 (Scan-Ergebnis: `72000`, SW `0122`, HW `7703`) |
-| `76.vwz.csv` | Warmwasser-/Speichermodul VWZ (Scan-Ergebnis: `VWZIO`, SW `0606`, HW `5103`) |
+| `08.hmu.csv` | Heizungssteuerung HMU (Scan-Ergebnis: `HMU00`, SW `0607`, HW `5103`) – gehört zur VRC 720/1 |
+| `15.720.csv` | Raumregler VRC 720/1 (Scan-Ergebnis: `72000`, SW `0122`, HW `7703`) |
+| `76.vwzio.csv` | Warmwasser-/Hydraulikstation VWZ MEH 97/6 (Scan-Ergebnis: `VWZIO`, SW `0606`, HW `5103`) |
 | `hcmode.inc`, `errors.inc` | Von den Dateien oben mit `!include` nachgeladene Zusatz-Definitionen (Betriebsarten-Text, Fehlercode-Text) |
 
 Diese Geräte-IDs stammen direkt aus dem ebusd-Log meiner Anlage
@@ -36,11 +36,36 @@ Diese Geräte-IDs stammen direkt aus dem ebusd-Log meiner Anlage
 nutzen willst: schau in deinem eigenen ebusd-Log nach den `scan ..:`-Zeilen
 und vergleiche die IDs.
 
+**Wichtig zur Dateibenennung:** ebusd sucht die Datei nicht nach dem
+Modellnamen vom Typenschild, sondern baut den Dateinamen automatisch aus der
+gemeldeten Scan-ID: klein geschrieben, bis zu zwei abschließende Nullen
+abgeschnitten. Aus `VWZIO` wird so `vwzio` → Datei `76.vwzio.csv` (**nicht**
+`76.vwz.csv` – das war ursprünglich der Name in diesem Repo und ist falsch für
+dieses Gerät, siehe [CHANGELOG](CHANGELOG.md)). Aus `72000` wird `720` →
+`15.720.csv`. Deshalb bitte nie Dateien "nach Gefühl" umbenennen.
+
 **Woher weiß ich, dass genau diese 9 Dateien reichen?** Die drei
-Geräte-Dateien (`08.hmu.csv`, `15.720.csv`, `76.vwz.csv`) wurden geprüft, ob
+Geräte-Dateien (`08.hmu.csv`, `15.720.csv`, `76.vwzio.csv`) wurden geprüft, ob
 sie per `!include` weitere Dateien nachladen – das ist bei zweien der Fall
 (`hcmode.inc`, `errors.inc`), und genau die sind auch mit dabei. Es gibt keine
 weiteren Abhängigkeiten.
+
+## Mein vollständiges Gerätesetup
+
+| Gerät (Typenschild) | Status |
+|---|---|
+| VRC 720/1 (Raumregler + HMU-Steuerung) | ✅ erfasst (`15.720.csv` + `08.hmu.csv`) |
+| VWZ MEH 97/6 (Hydraulikstation) | ✅ erfasst (`76.vwzio.csv`) |
+| recoVAIR VAR 360/4 E (Lüftungsgerät) | ❌ noch nicht erfasst – ist in keinem bisherigen Scan-Log als eigene `scan ..:`-Zeile aufgetaucht, echte Bus-ID unbekannt |
+| VWL 75/6 A 230V S2 (Wärmepumpen-Außeneinheit) | ❌ noch nicht erfasst – ebenfalls in keinem bisherigen Scan-Log aufgetaucht |
+| unbekanntes Gerät an Adresse `18` (meldet sich als `V32`, SW `0117`, HW `9802`) | ❌ ungeklärt – dafür existiert auch im offiziellen Original-Projekt keine Konfigurationsdatei |
+
+Für recoVAIR und die Wärmepumpen-Außeneinheit fehlt noch ein vollständiger
+`--scanconfig`-Lauf, in dem sie mit einer eigenen `scan ..:`-Zeile auftauchen
+(so wie es bei den anderen drei Geräten der Fall war). Erst mit der echten
+gemeldeten ID lässt sich die passende Datei zuverlässig bestimmen – raten
+nach Modellname hätte schon einmal zu genau den Fehlern geführt, die am
+Anfang dieses Projekts standen.
 
 ## Wie benutze ich das?
 
