@@ -1,4 +1,43 @@
 # type (r[1-9];w;u),circuit,name,[comment],[QQ],ZZ,PBSB,[ID],field1,part (m/s),datatypes/templates,divider/values,unit,comment,field2,part (m/s),datatypes/templates,divider/values,unit,comment,field3,part (m/s),datatypes/templates,divider/values,unit,comment,field4,part (m/s),datatypes/templates,divider/values,unit,comment
+# ported from community vaillant-arotherm-plus data (cyberthom42), cross-
+# checked against the equivalent working registers in 08.hmu.csv
+# Status Live Monitor
+*r,,,,,,"B503","00",,,,,,,,,,,,,,,,,,,,,,,,
+r1,,Statuscode,live monitor status code,,,,03,,,UIN,,,
+
+# State. Generic 6-field decode as kept enabled by the community source;
+# the commented line documents their proposed (unverified for this device)
+# semantic decode for future refinement.
+*r,,,,,,"B511",,,,,,,,,,,,,,,,,,,,,,,,,
+#r,,State,,,,,07,energy,,UCH,,,,,,energy,,,,,,onoff,,,,state,,UCH,0x01=ready;0x0b=error;0x09=heating;0x11=cooling;0x81=heating_water,,
+r,,State,,,,,07,field1,,UCH,,,,field2,,UIN,,,,field3,,UCH,,,,field4,,UCH,,,,field5,,UIN,,,,field6,,UCH,,,
+
+# Heat pump statistics (backup heater / Heizstab / priority valve)
+*r,,,,,,"B51A","05FF32",,,IGN:3,,,,,,,,,,,,,,,,,,,,,
+r,,FlowPressure,,,,,3d,,,D2C,4,,
+r,,HeizstabBetriebsStd,backup heater operating hours,,,,46,,,energy,,,
+r,,HeizstabStromverbrGesamt,backup heater total power consumption,,,,49,,,UIN,,,
+r,,HeizstabSchaltvorg,backup heater switching operations,,,,4a,,,UIN,,,
+r,,SchaltvorgaengeVUV_WW,priority switch valve WW switching operations,,,,4b,,,UIN,,,
+r,,Heizstab_Leistung,backup heater power,,,,4c,,,D1B,10,kW,
+r,,HeizstabTemp,backup heater temperature,,,,5c,,,temp,,,
+
+# Fachhandwerker-Konfiguration (installer configuration)
+*r,,,,,,"B51A","05FF33",,,IGN:3,,,,,,,,,,,,,,,,,,,,,
+*w,,,,,,"B51A","06FF33",,,,,,,,,,,,,,,,,,,,,,,,
+r;w,,HeizstabLeistungsgrenze,backup heater power limit,,,,1a,,,UIN,,kW,
+
+# B5 1A 34: not applicable on this device per the community source (kept
+# commented out for reference; see 08.hmu.csv for the HMU-side equivalent)
+#*r,,,,,,"B51A","05FF34",,,IGN:3,,,,,,,,,,,,,,,,,,,,,
+#*w,,,,,,"B51A","06FF34",,,,,,,,,,,,,,,,,,,,,,,,
+#r;w,,hwcBetriebsart,domestic hot water mode,,,,44,,,UCH,,,
+
+# B5 14 priority valve / backup heater flow temperature
+*r,,,,,,B514,,,,IGN:2,,,,,,,,,,,,,,,,,,,,,,
+r2,,HE_Vorrangumschaltventil_Warmwasser,priority switch valve WW,,,,050203ffff,,,switchvalve,,,T.1.02
+r,,HE_Vorlauftemperatur_Heizstab,backup heater flow temperature,,,,058203ffff,,,SIN,10,°C,T.1.130
+
 # additions from PR 330 for HMU;0901;5103 / VWZ;0522;5103
 # Test menus on VWZ. EnableTest message needs to be sent before each of the read messages work.
 *rs,#service,,,,,"B514",05,,,IGN:2,,,,,,,,,,,,,,,,,,,,,
