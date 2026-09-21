@@ -51,6 +51,13 @@ r;u,,Fan1Hours,,,,,51,,,UIN,,h,hours,,,,,,,,,,,,,
 r;u,,Fan1Starts,,,,,52,,,UIN,,,,,,,,,,,,,,,
 r;u,,Fan2Hours,,,,,5E,,,UIN,,h,hours,,,,,,,,,,,,,
 r;u,,Fan2Starts,,,,,5F,,,UIN,,,,,,,,,,,,,,,
+# additional installer configuration values, ported from community data
+# (read-only here; the TODO above about FF34 vs E534 addressing means the
+# write side for these was left out rather than guessed at)
+r,,CompressorStartThresholdHc,compressor start threshold heating,,,,1e,,,SIN,,°min,
+r,,ResidualPumpHead,residual pump head,,,,1f,,,pressm2,,,
+r,,CompressorStartThresholdCooling,compressor start threshold cooling,,,,21,,,SIN,,°min,
+r,,QuietMode,whisper/quiet mode setting,,,,28,,,UIN,,,
 
 # Heat pump configuration menu values
 r,,HeatCurve,,,,,8F352D,,,IGN:3,,,,,,BCD,10,,heat curve 0.1 to 4.0,,,,,,,,,,,,
@@ -101,6 +108,54 @@ r,,ConsumptionThisYear9,,,,,0900,month,,D1B,,,,,,IGN:1,,,,,,energy,,,,,,,,,
 r,,ConsumptionThisYear10,,,,,0A00,month,,D1B,,,,,,IGN:1,,,,,,energy,,,,,,,,,
 r,,ConsumptionThisYear11,,,,,0B00,month,,D1B,,,,,,IGN:1,,,,,,energy,,,,,,,,,
 r,,ConsumptionThisYear12,,,,,0C00,month,,D1B,,,,,,IGN:1,,,,,,energy,,,,,,,,,
+# Continuous live values from B514 (Vaillant service tool "HE_*" registers),
+# ported from community vaillant-arotherm-plus data. Same underlying values
+# as the Test* block below, but readable directly without first sending an
+# Enable* write. Types were cross-checked against the verified Test*
+# equivalents below where the community source had mismatched units.
+*r,,,,,,B514,,,,IGN:2,,,,,,,,,,,,,,,,,,,,,
+r,,HE_BuildingPumpPower,building circuit pump power,,,,050103ffff,,,percent0,,,T.0.01
+r,,HE_FanPower,fan power,,,,051103ffff,,,percent0,,,T.0.17
+r,,HE_CondensateTrayHeater,condensate tray heater,,,,051303ffff,,,onoff,,,T.0.19
+r,,HE_FourWayValve,4 way valve,,,,051403ffff,,,onoff,,,T.0.20
+r,,HE_EEVPosition,EEV position,,,,051503ffff,,,percent0,,,T.0.21
+r,,HE_HeatingCoilCompressor,heating coil compressor,,,,051703ffff,,,onoff,,,T.0.23
+r,,HE_FlowTemp,flow temperature,,,,052803ffff,,,SIN,10,°C,T.0.40
+r,,HE_ReturnTemp,return temperature,,,,052903ffff,,,SIN,10,°C,T.0.41
+r,,HE_WaterPressure,building water pressure,,,,052a03ffff,,,UIN,10,bar,T.0.42
+r,,HE_WaterFlow,building water flow rate,,,,052b03ffff,,,UIN,,l/h,T.0.43
+r,,HE_AirIntakeTemp,air intake temperature,,,,053003ffff,,,SIN,10,°C,T.0.48
+r,,HE_CompressorOutletTemp,compressor outlet temperature,,,,053703ffff,,,SIN,10,°C,T.0.55
+r,,HE_CompressorInletTemp,compressor inlet temperature,,,,053803ffff,,,SIN,10,°C,T.0.56
+r,,HE_EEVOutletTemp,EEV outlet temperature,,,,053903ffff,,,SIN,10,°C,T.0.57
+r,,HE_CondensorOutletTemp,condensor outlet temperature,,,,053b03ffff,,,SIN,10,°C,T.0.59
+r,,HE_HighPressure,high pressure,,,,053f03ffff,,,SIN,10,bar,T.0.63
+r,,HE_LowPressure,low pressure,,,,054003ffff,,,SIN,10,bar,T.0.64
+r,,HE_HighPressureSwitch,high pressure switch,,,,054303ffff,,,UCH,0=open;1=close,,T.0.67
+r,,HE_EvaporationTemp,evaporation temperature,,,,055503ffff,,,SIN,10,°C,T.0.85
+r,,HE_CondensationTemp,condensation temperature,,,,055603ffff,,,SIN,10,°C,T.0.86
+r,,HE_SuperheatTarget,overheating target value,,,,055703ffff,,,SIN,10,K,T.0.87
+r,,HE_SuperheatActual,overheating current value,,,,055803ffff,,,SIN,10,K,T.0.88
+r,,HE_SubcoolingTarget,sub cooling target value,,,,055903ffff,,,SIN,10,K,T.0.89
+r,,HE_SubcoolingActual,sub cooling current value,,,,055a03ffff,,,SIN,10,K,T.0.90
+r,,HE_CompressorSpeed,compressor speed,,,,055d03ffff,,,SIN,10,U/s,T.0.93
+r,,HE_TempSwitchCompressorOutlet,temperature switch compressor outlet,,,,057b03ffff,,,UCH,0=open;1=close,,T.0.123
+r,,HE_CylinderTemp,storage temperature,,,,052c03ffff,,,SIN,10,°C,T.1.44
+r,,HE_LockoutContactS20,lockout contact S20,,,,052e03ffff,,,UCH,0=close;1=open,,T.1.46
+r,,HE_SystemTemp,system temperature,,,,054603ffff,,,SIN,10,°C,T.1.70
+r,,HE_LockoutContactS21,lockout contact S21,,,,054803ffff,,,UCH,0=close;1=open,,T.1.72
+r,,HE_MA1Output,MA1 output,,,,057703ffff,,,onoff,,,T.1.119
+r,,HE_MAInput,ME input,,,,057d03ffff,,,SIN,,,T.1.125
+r,,HE_MA2Output,MA2 output,,,,057e03ffff,,,onoff,,,T.1.126
+r,,HE_MA3Output,MA3 output,,,,057f03ffff,,,onoff,,,T.1.127
+# The following were disabled/untested by the community source and are kept
+# commented out for reference; enable only after verifying on your own unit.
+#r,,HE_PrioritySwitchingValve,priority switch valve WW,,,,050203ffff,,,switchvalve,,,T.1.02
+#r,,HE_OutdoorTemp,outside temperature,,,,054503ffff,,,SIN,10,°C,T.1.69
+#r,,HE_DCFStatus,DCF status,,,,054703ffff,,,dcfstate,,,T.1.71
+#r,,HE_ImmersionHeaterSafetyCutOut,STB heater,,,,057c03ffff,,,UCH,0=close;1=open,,T.1.124
+#r,,HE_FlowTempImmersionHeater,backup heater flow temperature,,,,058203ffff,,,SIN,10,°C,T1.130
+
 # additions from PR 160 for HMU;0304;8802;0010019765
 # Test menus on VWZ. EnableTest message needs to be sent before each of the read messages work.,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 *rs,#service,,,,,"B514",05,,,IGN:2,,,,,,,,,,,,,,,,,,,,,
