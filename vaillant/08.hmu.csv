@@ -14,6 +14,11 @@ r,,YieldHwcMonth,,,,,12,,,energy,10,kWh,,,,,,,,,,,,,
 r,,CopHwcMonth,,,,,13,,,UIN,10,,,,,,,,,,,,,,
 r,,YieldHwc,energy yield hot water,,,,16,,,energy4,,,,,,,,,,,,,,,,,,,,,
 r,,CopHwc,,,,,17,,,UIN,10,,,,,,,,,,,,,,
+# ID 2C bestätigt aus ebusd-Log: das reale Display fragt diese Live-Monitor-Gruppe
+# selbst mit wechselndem Sequenzbyte statt fixem FF ab, dadurch bei ebusd bislang als
+# "unknown MS cmd" sichtbar; Wert an Byte-Position 3 (nach IGN:3) stimmt exakt mit
+# "Energieertrag gesamt / Kühlen" auf dem Hydrostation-Display überein.
+r,,YieldCool,total cooling yield,,,,2C,,,energy,,kWh,,,,,,,,,,,,,
 r,,Hours,operation hours,,,,40,,,hoursum,,,,,,,,,,,,,,,,,,,,,
 r,,HoursHc,operation hours heating,,,,41,,,hoursum,,,,,,,,,,,,,,,,,,,,,
 r,,HoursCool,operation hours cooling,,,,43,,,hoursum,,,,,,,,,,,,,,,,,,,,,
