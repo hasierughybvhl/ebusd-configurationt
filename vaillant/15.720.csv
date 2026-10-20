@@ -22,12 +22,20 @@ r;w,,Time,time,,,,3500,,,HTI,,,Aktuelle Uhrzeit
 r;w,,HydraulicScheme,system schema,,,,3600,,,UIN,,,Systemschema
 #r;w,,Unknown38,(constant 21),,,,3800,,,tempv,,,unknown value
 r,,WaterPressure,water pressure,,,,3900,,,pressv,,,Wasserdruck
-r;w,,SolarYieldTotal,total solar yield,,,,3D00,,,energy4,,,Solarertrag gesamt
+# [A3] AUSGESPART (2026-10-20): keine Solaranlage / kein Heizungspuffer / keine Speicherfuehler oben+unten.
+# Beleg: SolarYieldTotal immer 0 kWh, die Speicherfuehler-Werte immer "Unbekannt".
+# Die normale Speichertemperatur (HwcStorageTemp) bleibt aktiv.
+# Rueckgaengig machen: das "#" am Zeilenanfang der betroffenen Zeilen wieder entfernen.
+# Uebersicht aller ausgesparten/priorisierten Werte: ABFRAGEN.md
+#r;w,,SolarYieldTotal,total solar yield,,,,3D00,,,energy4,,,Solarertrag gesamt
 r;w,,YieldTotal,total environmental yield,,,,3E00,,,energy4,,,Umweltertrag gesamt
 r;w,,VentilationDay,day ventilation speed,,,,4200,,,UIN,,,Ventilation speed during day
 r;w,,VentilationNight,night ventilation,,,,4300,,,UIN,,,Ventilation speed during night
 r;w,,HwcMaxFlowTempDesired,hwc max flow temp desired,,,,4600,,,tempv,,,maximum flow temperature setpoint of Hwc
-r,,SystemFlowTemp,system flow temp,,,,4B00,,,tempv,,,Systemvorlauf
+# [B4] AUSGESPART (2026-10-20): liefert bei dieser Anlage nie einen Wert ("Unbekannt" in HA).
+# Rueckgaengig machen: das "#" am Zeilenanfang der betroffenen Zeilen wieder entfernen.
+# Uebersicht aller ausgesparten/priorisierten Werte: ABFRAGEN.md
+#r,,SystemFlowTemp,system flow temp,,,,4B00,,,tempv,,,Systemvorlauf
 r;w,,MultiRelaySetting,multifunction relay setting,,,,4D00,,,mamode,,,
 r;w,,PrFuelSumHcThisMonth,this months fuel consumption heating,,,,4E00,,,energy4,,,Aktueller Monat Brennstoffverbrauch Heizung
 r;w,,PrEnergySumHcThisMonth,this months energy consumption heating,,,,4F00,,,energy4,,,Aktueller Monat Stromverbrauch Heizung
@@ -41,7 +49,8 @@ r;w,,PrFuelSumHc,total fuel consumption heating,,,,5600,,,energy4,,,Brennstoffve
 r;w,,PrEnergySumHc,total energy consumption heating,,,,5700,,,energy4,,,Stromverbrauch Heizung gesamt
 r;w,,PrEnergySumHwc,total energy consumption hot water,,,,5800,,,energy4,,,Stromverbrauch hot water gesamt
 r;w,,PrFuelSumHwc,total fuel consumption hot water,,,,5900,,,energy4,,,Brennstoffverbrauch hot water gesamt
-r;w,,PrEnergySum,total energy consumption,,,,5C00,,,energy4,,,Dieses Jahr Stromverbrauch gesamt
+# [B4] ausgespart, Begruendung siehe weiter oben bzw. ABFRAGEN.md
+#r;w,,PrEnergySum,total energy consumption,,,,5C00,,,energy4,,,Dieses Jahr Stromverbrauch gesamt
 r;w,,PrFuelSum,total fuel consumption,,,,5D00,,,energy4,,,Dieses Jahr Brennstoffverbrauch gesamt
 #r;w,,Unknown67,(VR70 konfig 1),,,,6700,,,tempv,,,unknown value
 #r;w,,Unknown68,(VR70 konfig 1),,,,6800,,,tempv,,,unknown value
@@ -64,10 +73,11 @@ r;w,,BankHolidayEndPeriod,bank holiday end period,,,,8400,,,hto,,,end date of ba
 #r;w,,Unknown85,(constant 0/inf),,,,8500,,,tempv,,,unknown value
 r;w,,OutsideTempAvg,average outside temperature,,,,9500,,,tempv,,,gerundete mittlere Außentemperatur (alle 3h aktualisiert)
 r,,MaintenanceDue,maintenance due,,,,9600,,,yesno,,,zeigt an ob die Wartung fällig ist
-r,,HwcStorageTempTop,hwc storage temperature top,,,,9D00,,,tempv,,,"Temp.fühler WW, oben"
-r,,HwcStorageTempBottom, storage temperature bottom,,,,9E00,,,tempv,,,"Temp.fühler WW, unten"
-r,,HcStorageTempTop,hc storage temperature top,,,,9F00,,,tempv,,,"Temp.fühler Hz, oben"
-r,,HcStorageTempBottom,hc storage temperature bottom,,,,A000,,,tempv,,,"Temp.fühler Hz, unten"
+# [A3] ausgespart, Begruendung siehe weiter oben bzw. ABFRAGEN.md
+#r,,HwcStorageTempTop,hwc storage temperature top,,,,9D00,,,tempv,,,"Temp.fühler WW, oben"
+#r,,HwcStorageTempBottom, storage temperature bottom,,,,9E00,,,tempv,,,"Temp.fühler WW, unten"
+#r,,HcStorageTempTop,hc storage temperature top,,,,9F00,,,tempv,,,"Temp.fühler Hz, oben"
+#r,,HcStorageTempBottom,hc storage temperature bottom,,,,A000,,,tempv,,,"Temp.fühler Hz, unten"
 # ##### hot water circuit #####,,,,,,,,,,,,,
 *r,,,,,,B524,02000100,,,IGN:4,,,
 *w,,,,,,B524,02010100,,,,,,
@@ -105,47 +115,54 @@ r;w,,Hc1PumpStatus,PumpStatus heating circuit 1,,,,1E00,,,UIN,,,pump status of z
 # ##### heating circuit 2 #####,,,,,,,,,,,,,
 *r,,,,,,B524,02000201,,,IGN:4,,,
 *w,,,,,,B524,02010201,,,,,,
-r,,Hc2CircuitType,CircuitType heating circuit 2,,,,0200,,,mctype;IGN:1,,,
+# ===== [A1] AUSGESPART (2026-10-20): Heizkreis 2 und 3 =====
+# Grund: Anlage hat nur EINEN Heizkreis (vom Nutzer bestaetigt 20.10.2026).
+# Beleg: in HA lieferten Hc2*/Hc3* nur Status 0, Pumpe 0, Heizkurve 0.6
+# (Werkseinstellung) bzw. "Unbekannt". Kostete 24 Abfrage-Plaetze pro Runde.
+# Rueckgaengig machen: das "#" am Zeilenanfang der betroffenen Zeilen wieder entfernen.
+# Uebersicht aller ausgesparten/priorisierten Werte: ABFRAGEN.md
+#r,,Hc2CircuitType,CircuitType heating circuit 2,,,,0200,,,mctype;IGN:1,,,
 #r;w,,Hc2Unknown04,(constant 30) temperature heating circuit 2,,,,0400,,,tempv,,,unknown value for Hc2
-r,,Hc2ActualFlowTempDesired,ActualFlowTempDesired heating circuit 2,,,,0700,,,tempv,,,current flow temperature setpoint of Hc2
-r,,Hc2FlowTemp,FlowTemp heating circuit 2,,,,0800,,,tempv,,,current flow temperature of Hc2
+#r,,Hc2ActualFlowTempDesired,ActualFlowTempDesired heating circuit 2,,,,0700,,,tempv,,,current flow temperature setpoint of Hc2
+#r,,Hc2FlowTemp,FlowTemp heating circuit 2,,,,0800,,,tempv,,,current flow temperature of Hc2
 #r;w,,Hc2Unknown09,(constant 60) temperature,,,,0900,,,tempv,,,unknown value for Hc2
-r;w,,Hc2ExcessTemp,ExcessTemp heating circuit 2,,,,0B00,,,calibrationv,,,excess temperature of Hc2 (flow temperature's setpoint is increased by this value to keep the mixing valve in its control range)
+#r;w,,Hc2ExcessTemp,ExcessTemp heating circuit 2,,,,0B00,,,calibrationv,,,excess temperature of Hc2 (flow temperature's setpoint is increased by this value to keep the mixing valve in its control range)
 #r;w,,Hc2Unknown0c,(constant 65) temperature heating circuit 2,,,,0C00,,,tempv,,,unknown value for Hc2
 #r;w,,Hc2Unknown0d,(constant 65) temperature heating circuit 2,,,,0D00,,,tempv,,,unknown value for Hc2
-r;w,,Hc2AutoOffMode,AutoOffMode heating circuit 2,,,,0E00,,,offmode,,,operation of Hc2 during the lowering time; no influence if room temperature modulation is set to thermostat
-r;w,,Hc2HeatCurve,HeatCurve heating circuit 2,,,,0F00,,,EXP,,,heating curve of Hc2
-r;w,,Hc2MaxFlowTempDesired,MaxFlowTempDesired heating circuit 2,,,,1000,,,tempv,,,maximum flow temperature setpoint (end emphasis) of Hc2
+#r;w,,Hc2AutoOffMode,AutoOffMode heating circuit 2,,,,0E00,,,offmode,,,operation of Hc2 during the lowering time; no influence if room temperature modulation is set to thermostat
+#r;w,,Hc2HeatCurve,HeatCurve heating circuit 2,,,,0F00,,,EXP,,,heating curve of Hc2
+#r;w,,Hc2MaxFlowTempDesired,MaxFlowTempDesired heating circuit 2,,,,1000,,,tempv,,,maximum flow temperature setpoint (end emphasis) of Hc2
 #r;w,,Hc2Unknown11,(constant 20) temperature heating circuit 2,,,,1100,,,tempv,,,unknown value for Hc2
-r;w,,Hc2MinFlowTempDesired,MinFlowTempDesired heating circuit 2,,,,1200,,,tempv,,,minimum flow temperature setpoint (end emphasis) of Hc2
-r;w,,Hc2SummerTempLimit,summer outside switchoff temperature heating circuit 2,,,,1400,,,tempv,,,if outside temperature > summer limit => heating is OFF;applies to comfort and night setback setpoint
-r;w,,Hc2RoomTempSwitchOn,RoomTempSwitchOn heating circuit 2,,,,1500,,,rcmode,,,room temperature modulation of Hc2
-r,,Hc2MixerMovement,MixerMovement heating circuit 2,,,,1A00,,,EXP,,,"status of mixer (<0 closing, >0 opening)"
-r,,Hc2HeatCurveAdaption,HeatCurveAdaption heating circuit 2,,,,1C00,,,EXP,,,adaption applied to heating curve of Hc2
-r;w,,Hc2Status,Status heating circuit 2,,,,1B00,,,UCH,,,status of zone 2
-r;w,,Hc2PumpStatus,PumpStatus heating circuit 2,,,,1E00,,,UIN,,,pump status of zone 2
+#r;w,,Hc2MinFlowTempDesired,MinFlowTempDesired heating circuit 2,,,,1200,,,tempv,,,minimum flow temperature setpoint (end emphasis) of Hc2
+#r;w,,Hc2SummerTempLimit,summer outside switchoff temperature heating circuit 2,,,,1400,,,tempv,,,if outside temperature > summer limit => heating is OFF;applies to comfort and night setback setpoint
+#r;w,,Hc2RoomTempSwitchOn,RoomTempSwitchOn heating circuit 2,,,,1500,,,rcmode,,,room temperature modulation of Hc2
+#r,,Hc2MixerMovement,MixerMovement heating circuit 2,,,,1A00,,,EXP,,,"status of mixer (<0 closing, >0 opening)"
+#r,,Hc2HeatCurveAdaption,HeatCurveAdaption heating circuit 2,,,,1C00,,,EXP,,,adaption applied to heating curve of Hc2
+#r;w,,Hc2Status,Status heating circuit 2,,,,1B00,,,UCH,,,status of zone 2
+#r;w,,Hc2PumpStatus,PumpStatus heating circuit 2,,,,1E00,,,UIN,,,pump status of zone 2
 # ##### heating circuit 3 #####,,,,,,,,,,,,,
 *r,,,,,,B524,02000202,,,IGN:4,,,
 *w,,,,,,B524,02010202,,,,,,
-r,,Hc3CircuitType,CircuitType heating circuit 3,,,,0200,,,mctype;IGN:1,,,
+# [A1] ausgespart, Begruendung siehe weiter oben bzw. ABFRAGEN.md
+#r,,Hc3CircuitType,CircuitType heating circuit 3,,,,0200,,,mctype;IGN:1,,,
 #r;w,,Hc3Unknown04,(constant 30) temperature heating circuit 3,,,,0400,,,tempv,,,unknown value for Hc3
-r,,Hc3ActualFlowTempDesired,ActualFlowTempDesired heating circuit 3,,,,0700,,,tempv,,,current flow temperature setpoint of Hc3
-r,,Hc3FlowTemp,FlowTemp heating circuit 3,,,,0800,,,tempv,,,current flow temperature of Hc3
+#r,,Hc3ActualFlowTempDesired,ActualFlowTempDesired heating circuit 3,,,,0700,,,tempv,,,current flow temperature setpoint of Hc3
+#r,,Hc3FlowTemp,FlowTemp heating circuit 3,,,,0800,,,tempv,,,current flow temperature of Hc3
 #r;w,,Hc3Unknown09,(constant 60) temperature,,,,0900,,,tempv,,,unknown value for Hc3
-r;w,,Hc3ExcessTemp,ExcessTemp heating circuit 3,,,,0B00,,,calibrationv,,,excess temperature of Hc3 (flow temperature's setpoint is increased by this value to keep the mixing valve in its control range)
+#r;w,,Hc3ExcessTemp,ExcessTemp heating circuit 3,,,,0B00,,,calibrationv,,,excess temperature of Hc3 (flow temperature's setpoint is increased by this value to keep the mixing valve in its control range)
 #r;w,,Hc3Unknown0c,(constant 65) temperature heating circuit 3,,,,0C00,,,tempv,,,unknown value for Hc3
 #r;w,,Hc3Unknown0d,(constant 65) temperature heating circuit 3,,,,0D00,,,tempv,,,unknown value for Hc3
-r;w,,Hc3AutoOffMode,AutoOffMode heating circuit 3,,,,0E00,,,offmode,,,operation of Hc3 during the lowering time; no influence if room temperature modulation is set to thermostat
-r;w,,Hc3HeatCurve,HeatCurve heating circuit 3,,,,0F00,,,EXP,,,heating curve of Hc3
-r;w,,Hc3MaxFlowTempDesired,MaxFlowTempDesired heating circuit 3,,,,1000,,,tempv,,,maximum flow temperature setpoint (end emphasis) of Hc3
+#r;w,,Hc3AutoOffMode,AutoOffMode heating circuit 3,,,,0E00,,,offmode,,,operation of Hc3 during the lowering time; no influence if room temperature modulation is set to thermostat
+#r;w,,Hc3HeatCurve,HeatCurve heating circuit 3,,,,0F00,,,EXP,,,heating curve of Hc3
+#r;w,,Hc3MaxFlowTempDesired,MaxFlowTempDesired heating circuit 3,,,,1000,,,tempv,,,maximum flow temperature setpoint (end emphasis) of Hc3
 #r;w,,Hc3Unknown11,(constant 20) temperature heating circuit 3,,,,1100,,,tempv,,,unknown value for Hc3
-r;w,,Hc3MinFlowTempDesired,MinFlowTempDesired heating circuit 3,,,,1200,,,tempv,,,minimum flow temperature setpoint (end emphasis) of Hc3
-r;w,,Hc3SummerTempLimit,summer outside switchoff temperature heating circuit 3,,,,1400,,,tempv,,,if outside temperature > summer limit => heating is OFF;applies to comfort and night setback setpoint
-r;w,,Hc3RoomTempSwitchOn,RoomTempSwitchOn heating circuit 3,,,,1500,,,rcmode,,,room temperature modulation of Hc3
-r,,Hc3MixerMovement,MixerMovement heating circuit 3,,,,1A00,,,EXP,,,"status of mixer (<0 closing, >0 opening)"
-r,,Hc3HeatCurveAdaption,HeatCurveAdaption heating circuit 3,,,,1C00,,,EXP,,,adaption applied to heating curve of Hc3
-r;w,,Hc3Status,Status heating circuit 3,,,,1B00,,,UCH,,,status of zone 2
-r;w,,Hc3PumpStatus,PumpStatus heating circuit 3,,,,1E00,,,UIN,,,pump status of zone 3
+#r;w,,Hc3MinFlowTempDesired,MinFlowTempDesired heating circuit 3,,,,1200,,,tempv,,,minimum flow temperature setpoint (end emphasis) of Hc3
+#r;w,,Hc3SummerTempLimit,summer outside switchoff temperature heating circuit 3,,,,1400,,,tempv,,,if outside temperature > summer limit => heating is OFF;applies to comfort and night setback setpoint
+#r;w,,Hc3RoomTempSwitchOn,RoomTempSwitchOn heating circuit 3,,,,1500,,,rcmode,,,room temperature modulation of Hc3
+#r,,Hc3MixerMovement,MixerMovement heating circuit 3,,,,1A00,,,EXP,,,"status of mixer (<0 closing, >0 opening)"
+#r,,Hc3HeatCurveAdaption,HeatCurveAdaption heating circuit 3,,,,1C00,,,EXP,,,adaption applied to heating curve of Hc3
+#r;w,,Hc3Status,Status heating circuit 3,,,,1B00,,,UCH,,,status of zone 2
+#r;w,,Hc3PumpStatus,PumpStatus heating circuit 3,,,,1E00,,,UIN,,,pump status of zone 3
 # ##### zone 1 #####,,,,,,,,,,,,,
 *r,,,,,,B524,02000300,,,IGN:4,,,
 *w,,,,,,B524,02010300,,,,,,
@@ -172,90 +189,107 @@ r;w,,z1Name2,zone 1 label (second part),,,,1800,,,zname,,,name of zone 1
 # ##### zone 2 #####,,,,,,,,,,,,,
 *r,,,,,,B524,02000301,,,IGN:4,,,
 *w,,,,,,B524,02010301,,,,,,
-r;w,,z2OpModeCooling,cooling operation mode zone 2,,,,0100,,,opmode,,,operation mode for cooling of zone 2
-r;w,,z2CoolingTemp,cooling setpoint zone 2,,,,0200,,,tempv,,,desired cooling setpoint for zone 2
-r;w,,z2HolidayStartPeriod,holiday period start zone 2,,,,0300,,,hfrom,,,start date of holidays for zone 2
-r;w,,z2HolidayEndPeriod,holiday period end zone 2,,,,0400,,,hto,,,end date of holidays for zone 2
-r;w,,z2HolidayTemp,room setpoint holiday period zone 2,,,,0500,,,tempv,,,holiday setpoint for zone 2
-r;w,,z2OpMode,operation mode zone 2,,,,0600,,,opmode,,,operation mode of zone 2
-r;w,,z2DayTemp,desired temperature zone 2,,,,0700,,,tempv,,,day setpoint for zone 2
-r;w,,z2QuickVetoTemp,quick veto temperature zone 2,,,,0800,,,tempv,,,manual override setpoint for zone 2
-r;w,,z2NightTemp,night temperature zone 2,,,,0900,,,tempv,,,night setpoint for zone 2
-r;w,,z2BankHolidayStartPeriod,bank holiday start zone 2,,,,0C00,,,hfrom,,,start date of bank holidays for zone 2
-r;w,,z2BankHolidayEndPeriod,bank holiday end zone 2,,,,0D00,,,hto,,,end date of bank holidays for zone 2
-r;w,,z2SFMode,SF mode zone 2,,,,0E00,,,sfmode,,,
-r,,z2RoomTemp,room temperature zone 2,,,,0F00,,,tempv,,,current room temperature in zone 2
-r;w,,z2ValveStatus,valve status zone 2,,,,1200,,,UCH,,,valve status of zone 2
-r;w,,z2RoomZoneMapping,room zone mapping zone 2,,,,1300,,,zmapping,,,configures which room temperature is assigned to zone 2
-r;w,,z2ActualRoomTempDesired,room temperature desired zone 2,,,,1400,,,tempv,,,current room setpoint considering all basic conditions passed to the control algorithms
+# ===== [A2] AUSGESPART (2026-10-20): Zone 2 und 3 (inkl. deren Zeitprogramme) =====
+# Grund: Anlage hat nur EINE Zone (vom Nutzer bestaetigt 20.10.2026).
+# Beleg: z2/z3 RoomTemp "Unbekannt", ValveStatus 0, alle Zeitprogramme leer.
+# Rueckgaengig machen: das "#" am Zeilenanfang der betroffenen Zeilen wieder entfernen.
+# Uebersicht aller ausgesparten/priorisierten Werte: ABFRAGEN.md
+#r;w,,z2OpModeCooling,cooling operation mode zone 2,,,,0100,,,opmode,,,operation mode for cooling of zone 2
+#r;w,,z2CoolingTemp,cooling setpoint zone 2,,,,0200,,,tempv,,,desired cooling setpoint for zone 2
+#r;w,,z2HolidayStartPeriod,holiday period start zone 2,,,,0300,,,hfrom,,,start date of holidays for zone 2
+#r;w,,z2HolidayEndPeriod,holiday period end zone 2,,,,0400,,,hto,,,end date of holidays for zone 2
+#r;w,,z2HolidayTemp,room setpoint holiday period zone 2,,,,0500,,,tempv,,,holiday setpoint for zone 2
+#r;w,,z2OpMode,operation mode zone 2,,,,0600,,,opmode,,,operation mode of zone 2
+#r;w,,z2DayTemp,desired temperature zone 2,,,,0700,,,tempv,,,day setpoint for zone 2
+#r;w,,z2QuickVetoTemp,quick veto temperature zone 2,,,,0800,,,tempv,,,manual override setpoint for zone 2
+#r;w,,z2NightTemp,night temperature zone 2,,,,0900,,,tempv,,,night setpoint for zone 2
+#r;w,,z2BankHolidayStartPeriod,bank holiday start zone 2,,,,0C00,,,hfrom,,,start date of bank holidays for zone 2
+#r;w,,z2BankHolidayEndPeriod,bank holiday end zone 2,,,,0D00,,,hto,,,end date of bank holidays for zone 2
+#r;w,,z2SFMode,SF mode zone 2,,,,0E00,,,sfmode,,,
+#r,,z2RoomTemp,room temperature zone 2,,,,0F00,,,tempv,,,current room temperature in zone 2
+#r;w,,z2ValveStatus,valve status zone 2,,,,1200,,,UCH,,,valve status of zone 2
+#r;w,,z2RoomZoneMapping,room zone mapping zone 2,,,,1300,,,zmapping,,,configures which room temperature is assigned to zone 2
+#r;w,,z2ActualRoomTempDesired,room temperature desired zone 2,,,,1400,,,tempv,,,current room setpoint considering all basic conditions passed to the control algorithms
 #r;w,,z2Unknown15Temp,(in noise reduction 24 otherwise 99 - max.air level?) temperature zone 2,,,,1500,,,tempv,,,unknown value for zone 2
-r;w,,z2Shortname,Kurzbezeichnung zone 2,,,,1600,,,shortname,,,short name of zone 2
-r;w,,z2Name1,zone 2 label (first part),,,,1700,,,zname,,,name of zone 2
-r;w,,z2Name2,zone 2 label (second part),,,,1800,,,zname,,,name of zone 2
+#r;w,,z2Shortname,Kurzbezeichnung zone 2,,,,1600,,,shortname,,,short name of zone 2
+#r;w,,z2Name1,zone 2 label (first part),,,,1700,,,zname,,,name of zone 2
+#r;w,,z2Name2,zone 2 label (second part),,,,1800,,,zname,,,name of zone 2
 # ##### zone 3 #####,,,,,,,,,,,,,
 *r,,,,,,B524,02000302,,,IGN:4,,,
 *w,,,,,,B524,02010302,,,,,,
-r;w,,z3OpModeCooling,cooling operation mode zone 3,,,,0100,,,opmode,,,operation mode for cooling of zone 3
-r;w,,z3CoolingTemp,cooling setpoint zone 3,,,,0200,,,tempv,,,desired cooling setpoint for zone 3
-r;w,,z3HolidayStartPeriod,holiday period start zone 3,,,,0300,,,hfrom,,,start date of holidays for zone 3
-r;w,,z3HolidayEndPeriod,holiday period end zone 3,,,,0400,,,hto,,,end date of holidays for zone 3
-r;w,,z3HolidayTemp,room setpoint holiday period zone 3,,,,0500,,,tempv,,,holiday setpoint for zone 3
-r;w,,z3OpMode,operation mode zone 3,,,,0600,,,opmode,,,operation mode of zone 3
-r;w,,z3DayTemp,desired temperature zone 3,,,,0700,,,tempv,,,day setpoint for zone 3
-r;w,,z3QuickVetoTemp,quick veto temperature zone 3,,,,0800,,,tempv,,,manual override setpoint for zone 3
-r;w,,z3NightTemp,night temperature zone 3,,,,0900,,,tempv,,,night setpoint for zone 3
-r;w,,z3BankHolidayStartPeriod,bank holiday start zone 3,,,,0C00,,,hfrom,,,start date of bank holidays for zone 3
-r;w,,z3BankHolidayEndPeriod,bank holiday end zone 3,,,,0D00,,,hto,,,end date of bank holidays for zone 3
-r;w,,z3SFMode,SF mode zone 3,,,,0E00,,,sfmode,,,
-r,,z3RoomTemp,room temperature zone 3,,,,0F00,,,tempv,,,current room temperature in zone 3
-r;w,,z3ValveStatus,valve status zone 3,,,,1200,,,UCH,,,valve status of zone 3
-r;w,,z3RoomZoneMapping,room zone mapping zone 3,,,,1300,,,zmapping,,,configures which room temperature is assigned to zone 3
-r;w,,z3ActualRoomTempDesired,room temperature desired zone 3,,,,1400,,,tempv,,,current room setpoint considering all basic conditions passed to the control algorithms
+# [A2] ausgespart, Begruendung siehe weiter oben bzw. ABFRAGEN.md
+#r;w,,z3OpModeCooling,cooling operation mode zone 3,,,,0100,,,opmode,,,operation mode for cooling of zone 3
+#r;w,,z3CoolingTemp,cooling setpoint zone 3,,,,0200,,,tempv,,,desired cooling setpoint for zone 3
+#r;w,,z3HolidayStartPeriod,holiday period start zone 3,,,,0300,,,hfrom,,,start date of holidays for zone 3
+#r;w,,z3HolidayEndPeriod,holiday period end zone 3,,,,0400,,,hto,,,end date of holidays for zone 3
+#r;w,,z3HolidayTemp,room setpoint holiday period zone 3,,,,0500,,,tempv,,,holiday setpoint for zone 3
+#r;w,,z3OpMode,operation mode zone 3,,,,0600,,,opmode,,,operation mode of zone 3
+#r;w,,z3DayTemp,desired temperature zone 3,,,,0700,,,tempv,,,day setpoint for zone 3
+#r;w,,z3QuickVetoTemp,quick veto temperature zone 3,,,,0800,,,tempv,,,manual override setpoint for zone 3
+#r;w,,z3NightTemp,night temperature zone 3,,,,0900,,,tempv,,,night setpoint for zone 3
+#r;w,,z3BankHolidayStartPeriod,bank holiday start zone 3,,,,0C00,,,hfrom,,,start date of bank holidays for zone 3
+#r;w,,z3BankHolidayEndPeriod,bank holiday end zone 3,,,,0D00,,,hto,,,end date of bank holidays for zone 3
+#r;w,,z3SFMode,SF mode zone 3,,,,0E00,,,sfmode,,,
+#r,,z3RoomTemp,room temperature zone 3,,,,0F00,,,tempv,,,current room temperature in zone 3
+#r;w,,z3ValveStatus,valve status zone 3,,,,1200,,,UCH,,,valve status of zone 3
+#r;w,,z3RoomZoneMapping,room zone mapping zone 3,,,,1300,,,zmapping,,,configures which room temperature is assigned to zone 3
+#r;w,,z3ActualRoomTempDesired,room temperature desired zone 3,,,,1400,,,tempv,,,current room setpoint considering all basic conditions passed to the control algorithms
 #r;w,,z3Unknown15Temp,(in noise reduction 24 otherwise 99 - max.air level?) temperature zone 3,,,,1500,,,tempv,,,unknown value for zone 3
-r;w,,z3Shortname,shortlabel zone 3,,,,1600,,,shortname,,,short name of zone 3
-r;w,,z3Name1,label zone 3 part 1,,,,1700,,,zname,,,name of zone 3
-r;w,,z3Name2,label zone 3 part 2,,,,1800,,,zname,,,name of zone 3
+#r;w,,z3Shortname,shortlabel zone 3,,,,1600,,,shortname,,,short name of zone 3
+#r;w,,z3Name1,label zone 3 part 1,,,,1700,,,zname,,,name of zone 3
+#r;w,,z3Name2,label zone 3 part 2,,,,1800,,,zname,,,name of zone 3
 # ##### timers #####,,,,,,,,,,,,,
 # air,,,,,,,,,,,,,
 *r,,,,,,B524,03000001,,,IGN:1,,,whether timeslot is valid
 *w,,,,,,B524,04000001,,,,,,
-r;w,,ventilationTimer.Monday,timer air monday,,,,00,,,slot1-3,,,
-r;w,,ventilationTimer.Tuesday,timer air tuesday,,,,01,,,slot1-3,,,
-r;w,,ventilationTimer.Wednesday,timer air wednesday,,,,02,,,slot1-3,,,
-r;w,,ventilationTimer.Thursday,timer air thursday,,,,03,,,slot1-3,,,
-r;w,,ventilationTimer.Friday,timer air friday,,,,04,,,slot1-3,,,
-r;w,,ventilationTimer.Saturday,timer air saturday,,,,05,,,slot1-3,,,
-r;w,,ventilationTimer.Sunday,timer air sunday,,,,06,,,slot1-3,,,
+# ===== [B1] AUSGESPART (2026-10-20): Zeitprogramme (Lueftung, Fluesterbetrieb, Tarif, Warmwasser, Zone 1 Heizen+Kuehlen) =====
+# Grund: das Auslesen liefert bei dieser Anlage nie einen Wert (alle "Unbekannt",
+# gleiches Problem wie ccTimer in Version 1.0.2). Die Zeitprogramme SELBST
+# funktionieren und werden am Display des Reglers eingestellt - daran aendert
+# sich nichts. Kein Bedarf in HA (Nutzer, 20.10.2026). Kostete 70 Abfrage-Plaetze.
+# SPAETER REPARIERBAR: falls die Zeitprogramme doch mal in HA gebraucht werden,
+# muss die Lese-Definition korrigiert werden - nicht einfach nur "#" entfernen.
+# Uebersicht aller ausgesparten/priorisierten Werte: ABFRAGEN.md
+#r;w,,ventilationTimer.Monday,timer air monday,,,,00,,,slot1-3,,,
+#r;w,,ventilationTimer.Tuesday,timer air tuesday,,,,01,,,slot1-3,,,
+#r;w,,ventilationTimer.Wednesday,timer air wednesday,,,,02,,,slot1-3,,,
+#r;w,,ventilationTimer.Thursday,timer air thursday,,,,03,,,slot1-3,,,
+#r;w,,ventilationTimer.Friday,timer air friday,,,,04,,,slot1-3,,,
+#r;w,,ventilationTimer.Saturday,timer air saturday,,,,05,,,slot1-3,,,
+#r;w,,ventilationTimer.Sunday,timer air sunday,,,,06,,,slot1-3,,,
 # noise reduction,,,,,,,,,,,,,
 *r,,,,,,B524,03000002,,,IGN:1,,,whether timeslot is valid
 *w,,,,,,B524,04000002,,,,,,
-r;w,,noiseReductionTimer.Monday,timer noise reduction monday,,,,00,,,slot1-3,,,
-r;w,,noiseReductionTimer.Tuesday,timer noise reduction tuesday,,,,01,,,slot1-3,,,
-r;w,,noiseReductionTimer.Wednesday,timer noise reduction wednesday,,,,02,,,slot1-3,,,
-r;w,,noiseReductionTimer.Thursday,timer noise reduction thursday,,,,03,,,slot1-3,,,
-r;w,,noiseReductionTimer.Friday,timer noise reduction friday,,,,04,,,slot1-3,,,
-r;w,,noiseReductionTimer.Saturday,timer noise reduction saturday,,,,05,,,slot1-3,,,
-r;w,,noiseReductionTimer.Sunday,timer noise reduction sunday,,,,06,,,slot1-3,,,
+# [B1] ausgespart, Begruendung siehe weiter oben bzw. ABFRAGEN.md
+#r;w,,noiseReductionTimer.Monday,timer noise reduction monday,,,,00,,,slot1-3,,,
+#r;w,,noiseReductionTimer.Tuesday,timer noise reduction tuesday,,,,01,,,slot1-3,,,
+#r;w,,noiseReductionTimer.Wednesday,timer noise reduction wednesday,,,,02,,,slot1-3,,,
+#r;w,,noiseReductionTimer.Thursday,timer noise reduction thursday,,,,03,,,slot1-3,,,
+#r;w,,noiseReductionTimer.Friday,timer noise reduction friday,,,,04,,,slot1-3,,,
+#r;w,,noiseReductionTimer.Saturday,timer noise reduction saturday,,,,05,,,slot1-3,,,
+#r;w,,noiseReductionTimer.Sunday,timer noise reduction sunday,,,,06,,,slot1-3,,,
 # tariff,,,,,,,,,,,,,
 *r,,,,,,B524,03000003,,,IGN:1,,,whether timeslot is valid
 *w,,,,,,B524,04000003,,,,,,
-r;w,,tariffTimer.Monday,timer tariff monday,,,,00,,,slot1-3,,,
-r;w,,tariffTimer.Tuesday,timer tariff tuesday,,,,01,,,slot1-3,,,
-r;w,,tariffTimer.Wednesday,timer tariff wednesday,,,,02,,,slot1-3,,,
-r;w,,tariffTimer.Thursday,timer tariff thursday,,,,03,,,slot1-3,,,
-r;w,,tariffTimer.Friday,timer tariff friday,,,,04,,,slot1-3,,,
-r;w,,tariffTimer.Saturday,timer tariff saturday,,,,05,,,slot1-3,,,
-r;w,,tariffTimer.Sunday,timer tariff sunday,,,,06,,,slot1-3,,,
+# [B1] ausgespart, Begruendung siehe weiter oben bzw. ABFRAGEN.md
+#r;w,,tariffTimer.Monday,timer tariff monday,,,,00,,,slot1-3,,,
+#r;w,,tariffTimer.Tuesday,timer tariff tuesday,,,,01,,,slot1-3,,,
+#r;w,,tariffTimer.Wednesday,timer tariff wednesday,,,,02,,,slot1-3,,,
+#r;w,,tariffTimer.Thursday,timer tariff thursday,,,,03,,,slot1-3,,,
+#r;w,,tariffTimer.Friday,timer tariff friday,,,,04,,,slot1-3,,,
+#r;w,,tariffTimer.Saturday,timer tariff saturday,,,,05,,,slot1-3,,,
+#r;w,,tariffTimer.Sunday,timer tariff sunday,,,,06,,,slot1-3,,,
 # timers hot water,,,,,,,,,,,,,
 *r,,,,,,B524,03010001,,,IGN:1,,,whether timeslot is valid
 *w,,,,,,B524,04010001,,,,,,
-r;w,,hwcTimer.Monday,timer hwc monday,,,,00,,,slot1-3,,,
-r;w,,hwcTimer.Tuesday,timer hwc tuesday,,,,01,,,slot1-3,,,
-r;w,,hwcTimer.Wednesday,timer hwc wednesday,,,,02,,,slot1-3,,,
-r;w,,hwcTimer.Thursday,timer hwc thursday,,,,03,,,slot1-3,,,
-r;w,,hwcTimer.Friday,timer hwc friday,,,,04,,,slot1-3,,,
-r;w,,hwcTimer.Saturday,timer hwc saturday,,,,05,,,slot1-3,,,
-r;w,,hwcTimer.Sunday,timer hwc sunday,,,,06,,,slot1-3,,,
+# [B1] ausgespart, Begruendung siehe weiter oben bzw. ABFRAGEN.md
+#r;w,,hwcTimer.Monday,timer hwc monday,,,,00,,,slot1-3,,,
+#r;w,,hwcTimer.Tuesday,timer hwc tuesday,,,,01,,,slot1-3,,,
+#r;w,,hwcTimer.Wednesday,timer hwc wednesday,,,,02,,,slot1-3,,,
+#r;w,,hwcTimer.Thursday,timer hwc thursday,,,,03,,,slot1-3,,,
+#r;w,,hwcTimer.Friday,timer hwc friday,,,,04,,,slot1-3,,,
+#r;w,,hwcTimer.Saturday,timer hwc saturday,,,,05,,,slot1-3,,,
+#r;w,,hwcTimer.Sunday,timer hwc sunday,,,,06,,,slot1-3,,,
 # Zeitprogramm circulation pump,,,,,,,,,,,,,
 *r,,,,,,B524,03010002,,,IGN:1,,,whether timeslot is valid
 *w,,,,,,B524,04010002,,,,,,
@@ -272,59 +306,65 @@ r;w,,hwcTimer.Sunday,timer hwc sunday,,,,06,,,slot1-3,,,
 # timers zone 1,,,,,,,,,,,,,
 *r,,,,,,B524,03030002,,,IGN:1,,,whether timeslot is valid
 *w,,,,,,B524,04030002,,,,,,
-r;w,,z1Timer.Monday,timer heating monday,,,,00,,,slot1-3,,,
-r;w,,z1Timer.Tuesday,timer heating tuesday,,,,01,,,slot1-3,,,
-r;w,,z1Timer.Wednesday,timer heating wednesday,,,,02,,,slot1-3,,,
-r;w,,z1Timer.Thursday,timer heating thursday,,,,03,,,slot1-3,,,
-r;w,,z1Timer.Friday,timer heating friday,,,,04,,,slot1-3,,,
-r;w,,z1Timer.Saturday,timer heating saturday,,,,05,,,slot1-3,,,
-r;w,,z1Timer.Sunday,timer heating sunday,,,,06,,,slot1-3,,,
+# [B1] ausgespart, Begruendung siehe weiter oben bzw. ABFRAGEN.md
+#r;w,,z1Timer.Monday,timer heating monday,,,,00,,,slot1-3,,,
+#r;w,,z1Timer.Tuesday,timer heating tuesday,,,,01,,,slot1-3,,,
+#r;w,,z1Timer.Wednesday,timer heating wednesday,,,,02,,,slot1-3,,,
+#r;w,,z1Timer.Thursday,timer heating thursday,,,,03,,,slot1-3,,,
+#r;w,,z1Timer.Friday,timer heating friday,,,,04,,,slot1-3,,,
+#r;w,,z1Timer.Saturday,timer heating saturday,,,,05,,,slot1-3,,,
+#r;w,,z1Timer.Sunday,timer heating sunday,,,,06,,,slot1-3,,,
 *r,,,,,,B524,03030001,,,IGN:1,,,whether timeslot is valid
 *w,,,,,,B524,04030001,,,,,,
-r;w,,z1CoolingTimer.Monday,timer cooling monday,,,,00,,,slot1-3,,,
-r;w,,z1CoolingTimer.Tuesday,timer cooling tuesday,,,,01,,,slot1-3,,,
-r;w,,z1CoolingTimer.Wednesday,timer cooling wednesday,,,,02,,,slot1-3,,,
-r;w,,z1CoolingTimer.Thursday,timer cooling thursday,,,,03,,,slot1-3,,,
-r;w,,z1CoolingTimer.Friday,timer cooling friday,,,,04,,,slot1-3,,,
-r;w,,z1CoolingTimer.Saturday,timer cooling saturday,,,,05,,,slot1-3,,,
-r;w,,z1CoolingTimer.Sunday,timer cooling sunday,,,,06,,,slot1-3,,,
+# [B1] ausgespart, Begruendung siehe weiter oben bzw. ABFRAGEN.md
+#r;w,,z1CoolingTimer.Monday,timer cooling monday,,,,00,,,slot1-3,,,
+#r;w,,z1CoolingTimer.Tuesday,timer cooling tuesday,,,,01,,,slot1-3,,,
+#r;w,,z1CoolingTimer.Wednesday,timer cooling wednesday,,,,02,,,slot1-3,,,
+#r;w,,z1CoolingTimer.Thursday,timer cooling thursday,,,,03,,,slot1-3,,,
+#r;w,,z1CoolingTimer.Friday,timer cooling friday,,,,04,,,slot1-3,,,
+#r;w,,z1CoolingTimer.Saturday,timer cooling saturday,,,,05,,,slot1-3,,,
+#r;w,,z1CoolingTimer.Sunday,timer cooling sunday,,,,06,,,slot1-3,,,
 # timers zone 2,,,,,,,,,,,,,
 *r,,,,,,B524,03030102,,,IGN:1,,,whether timeslot is valid
 *w,,,,,,B524,04030102,,,,,,
-r;w,,z2Timer.Monday,timer heating monday,,,,00,,,slot1-3,,,
-r;w,,z2Timer.Tuesday,timer heating tuesday,,,,01,,,slot1-3,,,
-r;w,,z2Timer.Wednesday,timer heating wednesday,,,,02,,,slot1-3,,,
-r;w,,z2Timer.Thursday,timer heating thursday,,,,03,,,slot1-3,,,
-r;w,,z2Timer.Friday,timer heating friday,,,,04,,,slot1-3,,,
-r;w,,z2Timer.Saturday,timer heating saturday,,,,05,,,slot1-3,,,
-r;w,,z2Timer.Sunday,timer heating sunday,,,,06,,,slot1-3,,,
+# [A2] ausgespart, Begruendung siehe weiter oben bzw. ABFRAGEN.md
+#r;w,,z2Timer.Monday,timer heating monday,,,,00,,,slot1-3,,,
+#r;w,,z2Timer.Tuesday,timer heating tuesday,,,,01,,,slot1-3,,,
+#r;w,,z2Timer.Wednesday,timer heating wednesday,,,,02,,,slot1-3,,,
+#r;w,,z2Timer.Thursday,timer heating thursday,,,,03,,,slot1-3,,,
+#r;w,,z2Timer.Friday,timer heating friday,,,,04,,,slot1-3,,,
+#r;w,,z2Timer.Saturday,timer heating saturday,,,,05,,,slot1-3,,,
+#r;w,,z2Timer.Sunday,timer heating sunday,,,,06,,,slot1-3,,,
 *r,,,,,,B524,03030101,,,IGN:1,,,whether timeslot is valid
 *w,,,,,,B524,04030101,,,,,,
-r;w,,z2CoolingTimer.Monday,timer cooling monday,,,,00,,,slot1-3,,,
-r;w,,z2CoolingTimer.Tuesday,timer cooling tuesday,,,,01,,,slot1-3,,,
-r;w,,z2CoolingTimer.Wednesday,timer cooling wednesday,,,,02,,,slot1-3,,,
-r;w,,z2CoolingTimer.Thursday,timer cooling thursday,,,,03,,,slot1-3,,,
-r;w,,z2CoolingTimer.Friday,timer cooling friday,,,,04,,,slot1-3,,,
-r;w,,z2CoolingTimer.Saturday,timer cooling saturday,,,,05,,,slot1-3,,,
-r;w,,z2CoolingTimer.Sunday,timer cooling sunday,,,,06,,,slot1-3,,,
+# [A2] ausgespart, Begruendung siehe weiter oben bzw. ABFRAGEN.md
+#r;w,,z2CoolingTimer.Monday,timer cooling monday,,,,00,,,slot1-3,,,
+#r;w,,z2CoolingTimer.Tuesday,timer cooling tuesday,,,,01,,,slot1-3,,,
+#r;w,,z2CoolingTimer.Wednesday,timer cooling wednesday,,,,02,,,slot1-3,,,
+#r;w,,z2CoolingTimer.Thursday,timer cooling thursday,,,,03,,,slot1-3,,,
+#r;w,,z2CoolingTimer.Friday,timer cooling friday,,,,04,,,slot1-3,,,
+#r;w,,z2CoolingTimer.Saturday,timer cooling saturday,,,,05,,,slot1-3,,,
+#r;w,,z2CoolingTimer.Sunday,timer cooling sunday,,,,06,,,slot1-3,,,
 # timers zone 3,,,,,,,,,,,,,
 *r,,,,,,B524,03030202,,,IGN:1,,,whether timeslot is valid
 *w,,,,,,B524,04030202,,,,,,
-r;w,,z3Timer.Monday,timer heating monday,,,,00,,,slot1-3,,,
-r;w,,z3Timer.Tuesday,timer heating tuesday,,,,01,,,slot1-3,,,
-r;w,,z3Timer.Wednesday,timer heating wednesday,,,,02,,,slot1-3,,,
-r;w,,z3Timer.Thursday,timer heating thursday,,,,03,,,slot1-3,,,
-r;w,,z3Timer.Friday,timer heating friday,,,,04,,,slot1-3,,,
-r;w,,z3Timer.Saturday,timer heating saturday,,,,05,,,slot1-3,,,
-r;w,,z3Timer.Sunday,timer heating sunday,,,,06,,,slot1-3,,,
+# [A2] ausgespart, Begruendung siehe weiter oben bzw. ABFRAGEN.md
+#r;w,,z3Timer.Monday,timer heating monday,,,,00,,,slot1-3,,,
+#r;w,,z3Timer.Tuesday,timer heating tuesday,,,,01,,,slot1-3,,,
+#r;w,,z3Timer.Wednesday,timer heating wednesday,,,,02,,,slot1-3,,,
+#r;w,,z3Timer.Thursday,timer heating thursday,,,,03,,,slot1-3,,,
+#r;w,,z3Timer.Friday,timer heating friday,,,,04,,,slot1-3,,,
+#r;w,,z3Timer.Saturday,timer heating saturday,,,,05,,,slot1-3,,,
+#r;w,,z3Timer.Sunday,timer heating sunday,,,,06,,,slot1-3,,,
 *r,,,,,,B524,03030201,,,IGN:1,,,whether timeslot is valid
 *w,,,,,,B524,04030201,,,,,,
-r;w,,z3CoolingTimer.Monday,timer cooling monday,,,,00,,,slot1-3,,,
-r;w,,z3CoolingTimer.Tuesday,timer cooling tuesday,,,,01,,,slot1-3,,,
-r;w,,z3CoolingTimer.Wednesday,timer cooling wednesday,,,,02,,,slot1-3,,,
-r;w,,z3CoolingTimer.Thursday,timer cooling thursday,,,,03,,,slot1-3,,,
-r;w,,z3CoolingTimer.Friday,timer cooling friday,,,,04,,,slot1-3,,,
-r;w,,z3CoolingTimer.Saturday,timer cooling saturday,,,,05,,,slot1-3,,,
-r;w,,z3CoolingTimer.Sunday,timer cooling sunday,,,,06,,,slot1-3,,,
+# [A2] ausgespart, Begruendung siehe weiter oben bzw. ABFRAGEN.md
+#r;w,,z3CoolingTimer.Monday,timer cooling monday,,,,00,,,slot1-3,,,
+#r;w,,z3CoolingTimer.Tuesday,timer cooling tuesday,,,,01,,,slot1-3,,,
+#r;w,,z3CoolingTimer.Wednesday,timer cooling wednesday,,,,02,,,slot1-3,,,
+#r;w,,z3CoolingTimer.Thursday,timer cooling thursday,,,,03,,,slot1-3,,,
+#r;w,,z3CoolingTimer.Friday,timer cooling friday,,,,04,,,slot1-3,,,
+#r;w,,z3CoolingTimer.Saturday,timer cooling saturday,,,,05,,,slot1-3,,,
+#r;w,,z3CoolingTimer.Sunday,timer cooling sunday,,,,06,,,slot1-3,,,
 # includes,,,,,,,,,,,,,
 !include,errors.inc,,,,,,,,,,,,

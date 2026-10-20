@@ -78,6 +78,14 @@ Anfang dieses Projekts standen.
 5. Im Log-Tab des Add-ons prüfen: bei den drei Geräte-Dateien sollte jetzt
    `found messages: ...` stehen statt einer Fehlermeldung.
 
+## Was wird wie oft abgefragt?
+
+Welche Werte bewusst ausgespart, gratis mitgehört oder alle 30 s "live"
+abgefragt werden – und warum –, steht in [`ABFRAGEN.md`](ABFRAGEN.md). Die
+Home-Assistant-Automation für die Live-Werte liegt in
+[`homeassistant/`](homeassistant/) und muss einmalig in HA eingefügt werden
+(Anleitung steht oben in der Datei).
+
 ## Versionierung
 
 Die aktuell installierte Version steht in [`VERSION`](VERSION), alle

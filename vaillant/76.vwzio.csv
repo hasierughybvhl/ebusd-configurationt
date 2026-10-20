@@ -11,6 +11,12 @@ r1,,Statuscode,live monitor status code,,,,03,,,UIN,,,
 *r,,,,,,"B511",,,,,,,,,,,,,,,,,,,,,,,,,
 #r,,State,,,,,07,energy,,UCH,,,,,,energy,,,,,,onoff,,,,state,,UCH,0x01=ready;0x0b=error;0x09=heating;0x11=cooling;0x81=heating_water,,
 r,,State,,,,,07,field1,,UCH,,,,field2,,UIN,,,,field3,,UCH,,,,field4,,UCH,,,,field5,,UIN,,,,field6,,UCH,,,
+# [N1] NEU (2026-10-20): Status01 - KOSTENLOS MITGEHOERT. Der Regler fragt das
+# alle 10 s selbst bei der Hydraulikstation ab (Mithoer-Protokoll 20.10.2026:
+# "1076b5110101 / 0930fff707ff4a0000ff"). Liefert u. a. die Warmwasser-
+# Speichertemperatur (5. Feld, z. B. 4a -> 37,0 C) und die Aussentemperatur
+# (3. Feld, f7 07 -> 7,96 C). Gleiche Definition wie Status01 in hcmode.inc (HMU).
+r,,Status01,flow/return/outside/hwc/storage temp + pump (polled by controller every 10 s),,,,01,,,temp1;temp1;temp2;temp1;temp1;pumpstate,,,
 
 # Heat pump statistics (backup heater / Heizstab / priority valve)
 *r,,,,,,"B51A","05FF32",,,IGN:3,,,,,,,,,,,,,,,,,,,,,

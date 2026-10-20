@@ -1,0 +1,46 @@
+# Home-Assistant-Automation: ausgewaehlte Waermepumpen-Werte alle 30 s frisch abfragen
+#
+# Warum: ebusd fragt alle anderen Werte nur reihum ab (ca. alle 9 Minuten, siehe
+# ABFRAGEN.md). Diese Werte sollen in HA "live" aussehen (keine Treppen-Kurven,
+# kein veraltetes "0 W" bei laufender Waermepumpe).
+#
+# Wie: alle 30 s schickt HA pro Wert eine "get"-Anfrage per MQTT an ebusd;
+# ebusd liest den Wert dann sofort frisch vom Bus. Busbelastung: ca. 3 %.
+#
+# Einbauen: Einstellungen -> Automatisierungen & Szenen -> "+ Automatisierung
+# erstellen" -> "Neue Automatisierung erstellen" -> oben rechts Drei-Punkte-Menue
+# -> "In YAML bearbeiten" -> alles dort ersetzen durch den Inhalt ab "alias:"
+# -> Speichern.
+#
+# Werte aendern: Zeilen unter "for_each" ergaenzen/entfernen UND die Liste in
+# ABFRAGEN.md (Abschnitt "Live-Werte") gleich mitpflegen.
+#
+# Nicht hier enthalten, weil sie ohnehin kostenlos mitgehoert werden
+# (siehe ABFRAGEN.md, Abschnitt "Gratis mitgehoert"):
+#   Vorlauf/Ruecklauf grob (hmu Status01, alle 10 s), Soll-Vorlauf (SetMode, alle 10 s),
+#   Kompressor-Zustand/Modulation (hmu Status00, jede Minute),
+#   Warmwasser-Speichertemperatur (vwzio Status01, alle 10 s).
+
+alias: "ebusd: Live-Werte alle 30 s abfragen"
+description: "Fragt ausgewaehlte Waermepumpen-Werte alle 30 Sekunden frisch bei ebusd an (siehe Repo: homeassistant/ebusd_live_werte.yaml)"
+mode: single
+triggers:
+  - trigger: time_pattern
+    seconds: "/30"
+actions:
+  - repeat:
+      for_each:
+        - HE_FlowTemp                      # Vorlauf (0,1 C genau)
+        - HE_ReturnTemp                    # Ruecklauf (0,1 C genau)
+        - HE_AirIntakeTemp                 # Lufttemperatur am Aussengeraet
+        - RunDataElectricPowerConsumption  # Stromaufnahme in Watt
+        - CurrentYieldPower                # Waerme aus der Umgebungsluft (kW)
+        - RunDataStatuscode                # was die Waermepumpe gerade tut
+        - HE_FanPower                      # Luefter in %
+        - HE_BuildingPumpPower             # Heizungspumpe in %
+        - EnergyIntegral                   # Startzaehler des Kompressors (Grad-Minuten)
+      sequence:
+        - action: mqtt.publish
+          data:
+            topic: "ebusd/hmu/{{ repeat.item }}/get"
+            payload: ""
