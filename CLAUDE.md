@@ -78,3 +78,26 @@ zeigt dabei nur, dass irgendeine Allow-Regel existiert - nicht deren
 Position in der tatsächlichen Abarbeitungsreihenfolge. In so einem Fall:
 Regel-Reihenfolge ("Reorder") prüfen, statt weiter an Zonen/IP-Adressen der
 einzelnen Regel zu schrauben.
+
+## Abfragen aussparen oder priorisieren: immer dokumentieren
+
+Der Nutzer will nie erleben, dass bei einer Änderung plötzlich Daten nicht mehr
+abgefragt werden, die er eigentlich braucht. Deshalb gilt bei **jeder**
+Änderung daran, welche Werte abgefragt, ausgespart, priorisiert oder neu
+mitgehört werden:
+
+- **Vorher** [`ABFRAGEN.md`](ABFRAGEN.md) lesen. Sie ist die zentrale Übersicht.
+- **Beides pflegen:** Kommentar direkt an der betroffenen Zeile in der CSV-Datei
+  (mit Kennung wie `[A1]`, Grund, Beleg, Datum, Rückgängig-Hinweis) **und** die
+  Tabelle in `ABFRAGEN.md`.
+- Ausgesparte Zeilen nur mit `#` auskommentieren, **nie löschen**.
+- Nie etwas stillschweigend ausklammern. Im Zweifel den Nutzer fragen, ob er den
+  Wert braucht.
+- Einstellungen außerhalb des Repos (App-Optionen, `mqtt-hassio.cfg`,
+  HA-Automationen) ebenfalls in `ABFRAGEN.md` festhalten bzw. als Datei ins
+  Repo legen (z. B. `homeassistant/`).
+
+## Begriffe in Home Assistant
+
+"Add-ons" heißen in Home Assistant inzwischen **"Apps"**
+(Einstellungen → Apps). In Anleitungen für den Nutzer diesen Begriff verwenden.

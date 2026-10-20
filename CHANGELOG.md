@@ -10,6 +10,29 @@ werden hier festgehalten. Format angelehnt an
 - **MINOR** steigt, wenn Geräte-Dateien hinzukommen oder ersetzt werden.
 - **PATCH** steigt bei kleinen Korrekturen an bestehenden Dateien.
 
+## [1.1.0] - 2026-10-20
+
+### Geändert
+- Abfragen aufgeräumt: rund 160 Werte, die nie etwas liefern, doppelt sind oder
+  zu nicht vorhandenen Anlagenteilen gehören (Heizkreis 2/3, Zone 2/3, zweiter
+  Lüfter, Solar …), werden nicht mehr reihum abgefragt. Statt ~260 Werten alle
+  ~26 Minuten sind es jetzt ~93 Werte alle ~9 Minuten. Alles nur auskommentiert,
+  mit Begründung an jeder Zeile; Übersicht in der neuen Datei
+  [`ABFRAGEN.md`](ABFRAGEN.md).
+- Die Zeitprogramme (Heizen, Kühlen, Warmwasser usw.) werden nicht mehr
+  ausgelesen, weil das bei dieser Anlage nie funktioniert hat. Am Display
+  laufen sie unverändert weiter. Vermerkt als "später reparierbar".
+
+### Neu
+- `Status00` (HMU) und `Status01` (Hydraulikstation): werden vom Regler ohnehin
+  regelmäßig abgefragt und von ebusd jetzt kostenlos mitgehört (u. a.
+  Kompressor-Zustand jede Minute, Warmwasser-Speichertemperatur alle 10 s).
+- Home-Assistant-Automation [`homeassistant/ebusd_live_werte.yaml`](homeassistant/ebusd_live_werte.yaml):
+  fragt 9 wichtige Wärmepumpen-Werte alle 30 s frisch ab (u. a. Vorlauf,
+  Rücklauf, Stromaufnahme in Watt). Muss einmalig in HA eingefügt werden.
+- `CLAUDE.md`: Regel, dass jede Änderung an Abfragen an der Zeile und in
+  `ABFRAGEN.md` dokumentiert wird.
+
 ## [1.0.2] - 2026-09-21
 
 ### Behoben

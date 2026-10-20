@@ -1,6 +1,14 @@
 # type (r[1-9];w;u),circuit,name,[comment],[QQ],ZZ,PBSB,[ID],field1,part (m/s),datatypes/templates,divider/values,unit,comment,field2,part (m/s),datatypes/templates,divider/values,unit,comment,field3,part (m/s),datatypes/templates,divider/values,unit,comment,field4,part (m/s),datatypes/templates,divider/values,unit,comment
 *r,,,,,,"B511",,,,,,,,,,,,,,,,,,,,,,,,,
 r,,State,,,,,07,energy,,UCH,,,,,,energy,,,,,,onoff,,,,state,,UCH,0x01=ready;0x0b=error;0x09=heating;0x11=cooling;0x81=heating_water,,
+# [N1] NEU (2026-10-20): Status00 - KOSTENLOS MITGEHOERT. Der Regler (Adresse 10)
+# fragt das selbst jede Minute bei der HMU ab (Mithoer-Protokoll 20.10.2026:
+# "1008b5110100 / 09..."), ebusd muss dafuer nichts zusaetzlich senden.
+# Felddeutung aus cyberthom42-Wiki (chrizzzp, dort fuer aroTHERM Split), hier am
+# Protokoll plausibilisiert: aus = "84 01 10 00 00 08" -> 24,25 C / 1,6 bar / aus;
+# Kompressor laeuft = "9d 01 10 53 04 09 .. 2c" -> 25,8 C / 1,6 bar / Heizen.
+# Die beiden *Raw-Felder sind Rohwerte, ihre Skalierung (vermutl. %) ist unbestaetigt.
+r,,Status00,status polled by controller every 60 s,,,,00,FlowTemp,,temp,,,,WaterPressure,,UCH,10,bar,,CompressorModulationRaw,,UCH,,,raw value (scaling unconfirmed),CompressorState,,UCH,0=off;1=heating prerun;4=heating;5=heating overrun;24=hot water;110=defrosting,,,HeatingState,,UCH,8=off;9=heating,,,Field6,,UCH,,,,Defrost,,UCH,0=inactive;32=active,,,CompressorPowerRaw,,UCH,,,raw value (scaling unconfirmed)
 # Heatpump statistics,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 *r,,,,,,"B51A","05FF32",,,IGN:3,,,,,,,,,,,,,,,,,,,,,
 r,,YieldHcDay,,,,,00,,,energy,10,kWh,,,,,,,,,,,,,,,,,,,
@@ -24,18 +32,31 @@ r,,HoursHc,operation hours heating,,,,41,,,hoursum,,,,,,,,,,,,,,,,,,,,,
 r,,HoursCool,operation hours cooling,,,,43,,,hoursum,,,,,,,,,,,,,,,,,,,,,
 r,,HoursHwc,operation hours hot water,,,,44,,,hoursum,,,,,,,,,,,,,,,,
 # some more statistics from Live Monitor,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-r,,TargetFlowTemp,target flow temperature,,,,1F,,,temp,,,,,,,,,,,,,,,,,,,,,
-r,,FlowTemp,current flow temperature,,,,20,,,temp,,,,,,,,,,,,,,,,,,,,,
+# [C1] AUSGESPART (2026-10-20): DOPPELT - derselbe Messwert wird an anderer Stelle schon abgefragt.
+# Beleg (HA-Werte 20.10.2026, jeweils gleich): FlowTemp=HE_FlowTemp, AirIntakeTemp=
+# RunDataAirInletTemp=HE_AirIntakeTemp, TargetFlowTemp=SetMode flowtempdesired
+# (kommt kostenlos alle 10 s vom Regler), RunStats*-Zaehler = CompressorHours/
+# CompressorStarts/BuildingPumpHours/... bzw. Hours/HoursHc/HoursHwc,
+# RunDataBuildingCPumpPower=HE_BuildingPumpPower, RunDataCompressorOutletTemp=
+# HE_CompressorOutletTemp. Behalten wird jeweils die andere Quelle.
+# Rueckgaengig machen: das "#" am Zeilenanfang der betroffenen Zeilen wieder entfernen.
+# Uebersicht aller ausgesparten/priorisierten Werte: ABFRAGEN.md
+#r,,TargetFlowTemp,target flow temperature,,,,1F,,,temp,,,,,,,,,,,,,,,,,,,,,
+#r,,FlowTemp,current flow temperature,,,,20,,,temp,,,,,,,,,,,,,,,,,,,,,
 r,,EnergyIntegral,current energy integral,,,,21,,,integral,,,,,,,,,,,,,,,,,,,,,
 # example: 3108b51a0405ff3223 / 0aff083500000000000000
 r,,CurrentYieldPower,current yielded energy from the environment,,,,23,,,D1B,10,kW,,,,,,,,,,,,,,,,,,,
 # example: 3108b51a0405ff3224 / 0aff083501000000000000
 r,,CurrentConsumedPower,current power consumption,,,,24,,,D1B,10,kW,,,,,,,,,,,,,,,,,,,
 r,,CurrentCompressorUtil,current compressor utilization,,,,25,,,D1B,,%,,,,,,,,,,,,,,,,,,,
-r,,AirIntakeTemp,air intake temperature,,,,26,,,temp,,,,,,,,,,,,,,,
+# [C1] ausgespart, Begruendung siehe weiter oben bzw. ABFRAGEN.md
+#r,,AirIntakeTemp,air intake temperature,,,,26,,,temp,,,,,,,,,,,,,,,
 # Values from Live Monitor,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-r,,TargetTempHc,heat circuit target temperature,,,,1C,,,D2C,,°C,,,,,,,,,,,,,
-r,,SourceTempOutput,,,,,27,,,D2C,,°C,,,,,,,,,,,,,
+# [B4] AUSGESPART (2026-10-20): liefert bei dieser Anlage nie einen Wert ("Unbekannt" in HA).
+# Rueckgaengig machen: das "#" am Zeilenanfang der betroffenen Zeilen wieder entfernen.
+# Uebersicht aller ausgesparten/priorisierten Werte: ABFRAGEN.md
+#r,,TargetTempHc,heat circuit target temperature,,,,1C,,,D2C,,°C,,,,,,,,,,,,,
+#r,,SourceTempOutput,,,,,27,,,D2C,,°C,,,,,,,,,,,,,
 r,,BuildingCircuitFlow,,,,,3C,,,UIN,,l/h,,,,,,,,,,,,,
 r,,FlowPressure,,,,,3d,,,D2C,4,,,,,,,,,,,,,,
 r,,SourcePressure,,,,,3e,,,D2C,4,,,,,,,,,,,,,,
@@ -54,8 +75,12 @@ r;u,,EEVSteps,,,,,0D,,,UIN,,,,,,,,,,,,,,,
 r;u,,FourWayValveSwitchingOperations,,,,,30,,,UIN,,,,,,,,,,,,,,,
 r;u,,Fan1Hours,,,,,51,,,UIN,,h,hours,,,,,,,,,,,,,
 r;u,,Fan1Starts,,,,,52,,,UIN,,,,,,,,,,,,,,,
-r;u,,Fan2Hours,,,,,5E,,,UIN,,h,hours,,,,,,,,,,,,,
-r;u,,Fan2Starts,,,,,5F,,,UIN,,,,,,,,,,,,,,,
+# [A4] AUSGESPART (2026-10-20): zweiter Luefter existiert nicht (Aussengeraet hat nur einen).
+# Beleg: Fan2Hours/Fan2Starts "Unbekannt", RunStatsFan2Hours/Starts immer 0.
+# Rueckgaengig machen: das "#" am Zeilenanfang der betroffenen Zeilen wieder entfernen.
+# Uebersicht aller ausgesparten/priorisierten Werte: ABFRAGEN.md
+#r;u,,Fan2Hours,,,,,5E,,,UIN,,h,hours,,,,,,,,,,,,,
+#r;u,,Fan2Starts,,,,,5F,,,UIN,,,,,,,,,,,,,,,
 # additional installer configuration values, ported from community data
 # (read-only here; the TODO above about FF34 vs E534 addressing means the
 # write side for these was left out rather than guessed at)
@@ -65,40 +90,54 @@ r,,CompressorStartThresholdCooling,compressor start threshold cooling,,,,21,,,SI
 r,,QuietMode,whisper/quiet mode setting,,,,28,,,UIN,,,
 
 # Heat pump configuration menu values
-r,,HeatCurve,,,,,8F352D,,,IGN:3,,,,,,BCD,10,,heat curve 0.1 to 4.0,,,,,,,,,,,,
-r,,SummerSwitchOffTemp,,,,,8F352E,,,IGN:3,,,,,,D2C,,°C,Switch-off temperature summer (°C),,,,,,,,,,,,
+# [B2] AUSGESPART (2026-10-20): diese Einstellwerte liefern hier nie etwas ("Unbekannt").
+# Dieselben Einstellungen liefert der Regler zuverlaessig (15.720.csv: Hc1HeatCurve,
+# Hc1MaxFlowTempDesired, Hc1MinFlowTempDesired, Hc1SummerTempLimit, HwcTempDesired).
+# HwcMode aus demselben Block funktioniert und bleibt aktiv.
+# Rueckgaengig machen: das "#" am Zeilenanfang der betroffenen Zeilen wieder entfernen.
+# Uebersicht aller ausgesparten/priorisierten Werte: ABFRAGEN.md
+#r,,HeatCurve,,,,,8F352D,,,IGN:3,,,,,,BCD,10,,heat curve 0.1 to 4.0,,,,,,,,,,,,
+#r,,SummerSwitchOffTemp,,,,,8F352E,,,IGN:3,,,,,,D2C,,°C,Switch-off temperature summer (°C),,,,,,,,,,,,
 r,,HcBivalencePoint,,,,,8F352F,,,IGN:3,,,,,,D2C,,°C,Central heating bivalence point (°C),,,,,,,,,,,,
 r,,HwcBivalencePoint,,,,,8F3530,,,IGN:3,,,,,,D2C,,°C,Bivalence point domestic hot water (°C),,,,,,,,,,,,
-r,,MaxFlowTemp,,,,,8F3532,,,IGN:3,,,,,,D2C,,°C,Maximum flow temperature (°C),,,,,,,,,,,,
-r,,MinFlowTemp,,,,,8F3533,,,IGN:3,,,,,,D2C,,°C,Minimum flow temperature (°C),,,,,,,,,,,,
-r,,HcModeActive,,,,,8F3534,,,IGN:3,,,,,,UCH,0=no;1=yes,,Central heating mode active (yes/no),,,,,,,,,,,,
-r,,HwcModeActive,,,,,8F3535,,,IGN:3,,,,,,UCH,0=no;1=yes,,Domestic hot water mode active (yes/no),,,,,,,,,,,,
+# [B2] ausgespart, Begruendung siehe weiter oben bzw. ABFRAGEN.md
+#r,,MaxFlowTemp,,,,,8F3532,,,IGN:3,,,,,,D2C,,°C,Maximum flow temperature (°C),,,,,,,,,,,,
+#r,,MinFlowTemp,,,,,8F3533,,,IGN:3,,,,,,D2C,,°C,Minimum flow temperature (°C),,,,,,,,,,,,
+#r,,HcModeActive,,,,,8F3534,,,IGN:3,,,,,,UCH,0=no;1=yes,,Central heating mode active (yes/no),,,,,,,,,,,,
+#r,,HwcModeActive,,,,,8F3535,,,IGN:3,,,,,,UCH,0=no;1=yes,,Domestic hot water mode active (yes/no),,,,,,,,,,,,
 r,,HwcChargeHysteresis,,,,,8F3539,,,IGN:3,,,,,,D2C,,°K,Hysteresis Hwc charging (°K),,,,,,,,,,,,
-r,,ImmersionHeaterMode,,,,,C4331E,,,IGN:3,,,,,,UCH,0=off;1=on,,Immersion heater mode (on/off),,,,,,,,,,,,
+# [B2] ausgespart, Begruendung siehe weiter oben bzw. ABFRAGEN.md
+#r,,ImmersionHeaterMode,,,,,C4331E,,,IGN:3,,,,,,UCH,0=off;1=on,,Immersion heater mode (on/off),,,,,,,,,,,,
 r,,CompressorHysteresisHc,,,,,F83443,,,IGN:3,,,,,,D2C,,°K,Compressor hysteresis central heating (°K),,,,,,,,,,,,
 r,,CompressorHysteresisCooling,,,,,86353F,,,IGN:3,,,,,,D2C,,,Compressor hysteresis cooling (°K),,,,,,,,,,,,
 r,,HwcMode,,,,,523444,,,IGN:3,,,,,,UCH,0=eco;1=normal;2=balance,,Domestic hot water mod (eco/normal/balance),,,,,,,,,,,,
-r,,TargetTempHwc,,,,,C63207,,,IGN:3,,,,,,D2C,,°C,Target Hwc temperature (°C),,,,,,,,,,,,
+# [B2] ausgespart, Begruendung siehe weiter oben bzw. ABFRAGEN.md
+#r,,TargetTempHwc,,,,,C63207,,,IGN:3,,,,,,D2C,,°C,Target Hwc temperature (°C),,,,,,,,,,,,
 
 # Total heating yields,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 *r,,,,,,"B516","18",,,IGN:1,,,,,,,,,,,,,,,,,,,,,
-r,,YieldTotal,,,,,01,,,energy,,,,,,,,,,,,,,,,,,,,,
+# [B3] AUSGESPART (2026-10-20): Jahresertrag pro Monat und YieldTotal der HMU liefern nie einen Wert.
+# Der Gesamt-Umweltertrag kommt funktionierend vom Regler (15.720.csv: YieldTotal).
+# Rueckgaengig machen: das "#" am Zeilenanfang der betroffenen Zeilen wieder entfernen.
+# Uebersicht aller ausgesparten/priorisierten Werte: ABFRAGEN.md
+#r,,YieldTotal,,,,,01,,,energy,,,,,,,,,,,,,,,,,,,,,
 # Total electric power consumption,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 r,,ConsumptionTotal,,,,,02,,,energy,,,,,,,,,,,,,,,,,,,,,
 # Ecologic energy Yields,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 *r,,,,,,"B516","1A01",,,IGN:1,,,,,,,,,,,,,,,,,,,,,
-r,,YieldThisYear1,,,,,0100,month,,D1B,,,,,,IGN:1,,,,,,energy,,,,,,,,,
-r,,YieldThisYear2,,,,,0200,month,,D1B,,,,,,IGN:1,,,,,,energy,,,,,,,,,
-r,,YieldThisYear3,,,,,0300,month,,D1B,,,,,,IGN:1,,,,,,energy,,,,,,,,,
-r,,YieldThisYear4,,,,,0400,month,,D1B,,,,,,IGN:1,,,,,,energy,,,,,,,,,
-r,,YieldThisYear5,,,,,0500,month,,D1B,,,,,,IGN:1,,,,,,energy,,,,,,,,,
-r,,YieldThisYear6,,,,,0600,month,,D1B,,,,,,IGN:1,,,,,,energy,,,,,,,,,
-r,,YieldThisYear7,,,,,0700,month,,D1B,,,,,,IGN:1,,,,,,energy,,,,,,,,,
-r,,YieldThisYear8,,,,,0800,month,,D1B,,,,,,IGN:1,,,,,,energy,,,,,,,,,
-r,,YieldThisYear9,,,,,0900,month,,D1B,,,,,,IGN:1,,,,,,energy,,,,,,,,,
-r,,YieldThisYear10,,,,,0A00,month,,D1B,,,,,,IGN:1,,,,,,energy,,,,,,,,,
-r,,YieldThisYear11,,,,,0B00,month,,D1B,,,,,,IGN:1,,,,,,energy,,,,,,,,,
-r,,YieldThisYear12,,,,,0C00,month,,D1B,,,,,,IGN:1,,,,,,energy,,,,,,,,,
+# [B3] ausgespart, Begruendung siehe weiter oben bzw. ABFRAGEN.md
+#r,,YieldThisYear1,,,,,0100,month,,D1B,,,,,,IGN:1,,,,,,energy,,,,,,,,,
+#r,,YieldThisYear2,,,,,0200,month,,D1B,,,,,,IGN:1,,,,,,energy,,,,,,,,,
+#r,,YieldThisYear3,,,,,0300,month,,D1B,,,,,,IGN:1,,,,,,energy,,,,,,,,,
+#r,,YieldThisYear4,,,,,0400,month,,D1B,,,,,,IGN:1,,,,,,energy,,,,,,,,,
+#r,,YieldThisYear5,,,,,0500,month,,D1B,,,,,,IGN:1,,,,,,energy,,,,,,,,,
+#r,,YieldThisYear6,,,,,0600,month,,D1B,,,,,,IGN:1,,,,,,energy,,,,,,,,,
+#r,,YieldThisYear7,,,,,0700,month,,D1B,,,,,,IGN:1,,,,,,energy,,,,,,,,,
+#r,,YieldThisYear8,,,,,0800,month,,D1B,,,,,,IGN:1,,,,,,energy,,,,,,,,,
+#r,,YieldThisYear9,,,,,0900,month,,D1B,,,,,,IGN:1,,,,,,energy,,,,,,,,,
+#r,,YieldThisYear10,,,,,0A00,month,,D1B,,,,,,IGN:1,,,,,,energy,,,,,,,,,
+#r,,YieldThisYear11,,,,,0B00,month,,D1B,,,,,,IGN:1,,,,,,energy,,,,,,,,,
+#r,,YieldThisYear12,,,,,0C00,month,,D1B,,,,,,IGN:1,,,,,,energy,,,,,,,,,
 # Electric power consumption,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 *r,,,,,,"B516","1A02",,,IGN:1,,,,,,,,,,,,,,,,,,,,,
 r,,ConsumptionThisYear1,,,,,0100,month,,D1B,,,,,,IGN:1,,,,,,energy,,,,,,,,,
@@ -145,9 +184,15 @@ r,,HE_SubcoolingTarget,sub cooling target value,,,,055903ffff,,,SIN,10,K,T.0.89
 r,,HE_SubcoolingActual,sub cooling current value,,,,055a03ffff,,,SIN,10,K,T.0.90
 r,,HE_CompressorSpeed,compressor speed,,,,055d03ffff,,,SIN,10,U/s,T.0.93
 r,,HE_TempSwitchCompressorOutlet,temperature switch compressor outlet,,,,057b03ffff,,,UCH,0=open;1=close,,T.0.123
-r,,HE_CylinderTemp,storage temperature,,,,052c03ffff,,,SIN,10,°C,T.1.44
+# [A5] AUSGESPART (2026-10-20): an der HMU ist kein Speicher- bzw. Systemfuehler angeschlossen (Wert immer -99 C).
+# Die Speichertemperatur kommt stattdessen vom Regler (720: HwcStorageTemp) und
+# kostenlos mitgehoert von der Hydraulikstation (76.vwzio.csv: Status01).
+# Rueckgaengig machen: das "#" am Zeilenanfang der betroffenen Zeilen wieder entfernen.
+# Uebersicht aller ausgesparten/priorisierten Werte: ABFRAGEN.md
+#r,,HE_CylinderTemp,storage temperature,,,,052c03ffff,,,SIN,10,°C,T.1.44
 r,,HE_LockoutContactS20,lockout contact S20,,,,052e03ffff,,,UCH,0=close;1=open,,T.1.46
-r,,HE_SystemTemp,system temperature,,,,054603ffff,,,SIN,10,°C,T.1.70
+# [A5] ausgespart, Begruendung siehe weiter oben bzw. ABFRAGEN.md
+#r,,HE_SystemTemp,system temperature,,,,054603ffff,,,SIN,10,°C,T.1.70
 r,,HE_LockoutContactS21,lockout contact S21,,,,054803ffff,,,UCH,0=close;1=open,,T.1.72
 r,,HE_MA1Output,MA1 output,,,,057703ffff,,,onoff,,,T.1.119
 r,,HE_MAInput,ME input,,,,057d03ffff,,,SIN,,,T.1.125
@@ -178,7 +223,8 @@ rs,,TestCompressorSpeed,compressor speed,,,,5d,,,SIN,10,U/s,T.0.93
 # installer level test menu sensor/actor test from PR #174
 rs,,TestBuildingPumpPower,building pump power,,,,01,,,percent0,,,T.0.01
 rs,,TestFan1,fan 1,,,,11,,,percent0,,,T.0.02
-rs,,TestFan2,fan 2,,,,12,,,percent0,,,T.0.02
+# [A4] ausgespart, Begruendung siehe weiter oben bzw. ABFRAGEN.md
+#rs,,TestFan2,fan 2,,,,12,,,percent0,,,T.0.02
 rs,,TestCondensateTrayHeater,condensate tray heater,,,,13,,,onoff,,,T.0.19
 rs,,TestFourWayValve,4 way valve,,,,14,,,onoff,,,T.0.20
 rs,,TestHeatingCoilCompressor,heating coil compressor,,,,17,,,onoff,,,T.0.23
@@ -256,28 +302,34 @@ ri,,StatEEVSteps,EEV steps,,,,e4340d,,,UIN,,,
 r,,RunDataCompressorSpeed,,,,,0D0A,,,EXP,,rps,,,,,,,,,,,,,,,,,,,
 r,,RunDataEEVPositionAbs,(EEV Position in different scale?),,,,280A,,,UIN,,,,,,,,,,,,,,,,,,,,,
 r,,RunDataFan1Speed,,,,,470A,,,EXP,,rpm,,,,,,,,,,,,,,,,,,,
-r,,RunDataFan2Speed,,,,,490A,,,EXP,,rpm,,,,,,,,,,,,,,,,,,,
+# [A4] ausgespart, Begruendung siehe weiter oben bzw. ABFRAGEN.md
+#r,,RunDataFan2Speed,,,,,490A,,,EXP,,rpm,,,,,,,,,,,,,,,,,,,
 r,,RunDataStatuscode,,,,,530D,,,UIN,34=Frost protection;100=Standby;101=Heating: Compressor shutdown;102=Heating: Compressor blocked;103=Heating: Prerun;104=Heating: Compressor active;107=Heating: Overrun;111=Cooling: Compressor shutdown;112=Cooling: Compressor blocked;113=Cooling: Prerun;114=Cooling: Compressor active;117=Cooling: Overrun;125=Heating: Immersion heater active;132=Warm Water: Compressor blocked;133=Warm Water: Prerun;134=Warm Water: Compressor active;135=Warm Water: Immersion Heater active;137=Warm Water: Overrun;141=Heating: Immersion Heater shutdown;142=Heating: Immersion Heater blocked;151=Warm Water: Immersion Heater shutdown;152=Warm Water: Immersion Heater blocked;202=Air purging program active;240=Compressor oil heating activated;252=Fan 1 blocked;255=Fan 1 air inlet too high;256=Fan 1 air inlet too low;260=Fan 2 blocked;275=Building circuit flow too low;277=Building circuit pump fault;280=Frequency converter fault: Compressor;281=Frequency converter fault: Mains voltage;282=Frequency converter fault: Overheating;283=Deicing time too long;284=Deicing flow temperature too low;285=Compressor outlet temperature too high;286=Hot gas temperature switch open;287=Fan 1: Wind;288=Fan 2: Wind;289=Current limt active;302=High pressure switch open;303=Compressor outlet temperature too high;304=Evaporation temperature too low;305=Condensation temperature too low;306=Evaporation temperature too high;308=Condensation temperature too high;312=Building circuit return temperature too low;314=Building circuit return temperature too high;351=Immersion heater: Flow temperature too high;516=Deicing active;575=Frequency converter fault;581=Connection fault: frequency converter;590=4-port-valve position fault,,,,,,,,,,,,,,,,,,,,
 r,,RunDataElectricPowerConsumption,,,,,5B0D,,,EXP,,W,current electrical power consumption (Watt),,,,,,,,,,,,,,,,,,
 r,,RunDataHighPressure,,,,,6A09,,,pressv,,,,,,,,,,,,,,,,,,,,,
 r,,RunDataCompressorInletTemp,,,,,9808,,,tempv,,,,,,,,,,,,,,,,,,,,,
-r,,RunDataCompressorOutletTemp,,,,,A208,,,tempv,,,,,,,,,,,,,,,,,,,,,
+# [C1] ausgespart, Begruendung siehe weiter oben bzw. ABFRAGEN.md
+#r,,RunDataCompressorOutletTemp,,,,,A208,,,tempv,,,,,,,,,,,,,,,,,,,,,
 r,,RunDataEEVOutletTemp,,,,,AC08,,,tempv,,,,,,,,,,,,,,,,,,,,,
-r,,RunStatsHMUHours,,,,,B80B,,,UIN,,hours,,,,,,,,,,,,,,,,,,,
-r,,RunStatsHcHours,,,,,B90B,,,UIN,,hours,,,,,,,,,,,,,,,,,,,
-r,,RunStatsHwcHours,,,,,BC0B,,,UIN,,hours,total runtime of Hwc mode,,,,,,,,,,,,,,,,,,
-r,,RunStatsCompressorHours,,,,,C20B,,,UIN,,hours,,,,,,,,,,,,,,,,,,,
-r,,RunStatsCompressorStarts,,,,,C30B,,,cntstarts2,,,,,,,,,,,,,,,,,,,,,
-r,,RunStatsBuildingPumpHours,,,,,C40B,,,UIN,,hours,,,,,,,,,,,,,,,,,,,
-r,,RunDataBuildingCPumpPower,,,,,C509,,,EXP,,%,,,,,,,,,,,,,,,,,,,
-r,,RunStatsBuildingCPumpStarts,,,,,C50B,,,cntstarts2,,,total starts of building circuit pump,,,,,,,,,,,,,,,,,,
-r,,RunStats4PortValveHours,,,,,C80B,,,UIN,,hours,,,,,,,,,,,,,,,,,,,
+# [C1] ausgespart, Begruendung siehe weiter oben bzw. ABFRAGEN.md
+#r,,RunStatsHMUHours,,,,,B80B,,,UIN,,hours,,,,,,,,,,,,,,,,,,,
+#r,,RunStatsHcHours,,,,,B90B,,,UIN,,hours,,,,,,,,,,,,,,,,,,,
+#r,,RunStatsHwcHours,,,,,BC0B,,,UIN,,hours,total runtime of Hwc mode,,,,,,,,,,,,,,,,,,
+#r,,RunStatsCompressorHours,,,,,C20B,,,UIN,,hours,,,,,,,,,,,,,,,,,,,
+#r,,RunStatsCompressorStarts,,,,,C30B,,,cntstarts2,,,,,,,,,,,,,,,,,,,,,
+#r,,RunStatsBuildingPumpHours,,,,,C40B,,,UIN,,hours,,,,,,,,,,,,,,,,,,,
+#r,,RunDataBuildingCPumpPower,,,,,C509,,,EXP,,%,,,,,,,,,,,,,,,,,,,
+#r,,RunStatsBuildingCPumpStarts,,,,,C50B,,,cntstarts2,,,total starts of building circuit pump,,,,,,,,,,,,,,,,,,
+#r,,RunStats4PortValveHours,,,,,C80B,,,UIN,,hours,,,,,,,,,,,,,,,,,,,
 r,,RunStats4PortValveSwitches,,,,,C90B,,,cntstarts2,,,,,,,,,,,,,,,,,,,,,
-r,,RunStatsFan1Hours,,,,,D70B,,,UIN,,hours,,,,,,,,,,,,,,,,,,,
-r,,RunStatsFan1Starts,,,,,D80B,,,cntstarts2,,,,,,,,,,,,,,,,,,,,,
-r,,RunStatsFan2Hours,,,,,D90B,,,UIN,,hours,,,,,,,,,,,,,,,,,,,
-r,,RunStatsFan2Starts,,,,,DA0B,,,cntstarts2,,,,,,,,,,,,,,,,,,,,,
-r,,RunDataAirInletTemp,,,,,DE08,,,tempv,,,,,,,,,,,,,,,,,,,,,
+# [C1] ausgespart, Begruendung siehe weiter oben bzw. ABFRAGEN.md
+#r,,RunStatsFan1Hours,,,,,D70B,,,UIN,,hours,,,,,,,,,,,,,,,,,,,
+#r,,RunStatsFan1Starts,,,,,D80B,,,cntstarts2,,,,,,,,,,,,,,,,,,,,,
+# [A4] ausgespart, Begruendung siehe weiter oben bzw. ABFRAGEN.md
+#r,,RunStatsFan2Hours,,,,,D90B,,,UIN,,hours,,,,,,,,,,,,,,,,,,,
+#r,,RunStatsFan2Starts,,,,,DA0B,,,cntstarts2,,,,,,,,,,,,,,,,,,,,,
+# [C1] ausgespart, Begruendung siehe weiter oben bzw. ABFRAGEN.md
+#r,,RunDataAirInletTemp,,,,,DE08,,,tempv,,,,,,,,,,,,,,,,,,,,,
 *r,,,,,,"B511",,,,,,,,,,,,,,,,,,,,,,,,,
 r,,RunStatsCompressorHc,compressor runtime in min and starts in Hc mode,,,,1801,,,IGN:1;minutes4:runtime;cntstarts:cycles,,,,,,,,,,,,,,,,,,,,,
 r,,RunStatsCompressorHwc,compressor runtime in min and starts in Hwc mode,,,,1802,,,IGN:1;minutes4:runtime;cntstarts:cycles,,,,,,,,,,,,,,,,,,,,,
