@@ -45,11 +45,13 @@ abgeschnitten. Aus `VWZIO` wird so `vwzio` → Datei `76.vwzio.csv` (**nicht**
 dieses Gerät, siehe [CHANGELOG](CHANGELOG.md)). Aus `72000` wird `720` →
 `15.720.csv`. Deshalb bitte nie Dateien "nach Gefühl" umbenennen.
 
-**Woher weiß ich, dass genau diese 10 Dateien reichen?** Die drei
-Geräte-Dateien (`08.hmu.csv`, `15.720.csv`, `76.vwzio.csv`) wurden geprüft, ob
-sie per `!include` weitere Dateien nachladen – das ist bei zweien der Fall
-(`hcmode.inc`, `errors.inc`), und genau die sind auch mit dabei. Es gibt keine
-weiteren Abhängigkeiten.
+**Woher weiß ich, dass genau diese 10 Dateien reichen?** Die vier
+Geräte-Dateien (`08.hmu.csv`, `15.720.csv`, `76.vwzio.csv`, `18.v32.csv`)
+wurden geprüft, ob sie per `!include` weitere Dateien nachladen – das ist bei
+zweien der Fall (`hcmode.inc`, `errors.inc`), und genau die sind auch mit
+dabei. `18.v32.csv` braucht zusätzlich die Vorlagen `percent`/`percents`, die
+dafür in `_templates.csv` ergänzt wurden. Es gibt keine weiteren
+Abhängigkeiten.
 
 ## Mein vollständiges Gerätesetup
 
