@@ -48,6 +48,12 @@ mit (Belege: Mithör-Protokoll 20.10.2026).
 | – | hcmode.inc | `Status01` (HMU, schon vorhanden) | alle 10 s | Vorlauf, Rücklauf (0,5 °C-Schritte), Pumpe an/aus |
 | – | hcmode.inc | `SetMode` (schon vorhanden) | alle 10 s | Soll-Vorlauf, Betriebsart |
 
+## Neu abgefragt
+
+| Kennung | Datei | Was | Auswirkung | Rückgängig |
+|---|---|---|---|---|
+| N2 | 18.v32.csv | Lüftungsgerät recoVAIR VAR 360/4 E (neu seit 1.2.0): 45 Werte, davon 42 lesbar – Lüfterstufen Tag/Nacht, Wärmerückgewinnung, Außen-/Zu-/Ab-/Fortlufttemperatur, Abluftfeuchte, Volumenströme, Lüfterdrehzahlen, Bypass, Filter-/Wartungstage, Energieertrag sowie Installationseinstellungen | Reihum-Runde wächst von ~93 auf ~135 Werte, also von **~9 auf ~13–14 Minuten** pro Runde für **alle** Werte. Die bisherigen Werte kommen also seltener dran. Bewusst noch nichts ausgespart – erst echte Werte abwarten, dann gemeinsam entscheiden, was weg kann (Kandidaten: Installationseinstellungen wie `InstallationHeight`, `NominalFlow`, `MinCO2Content`, die sich praktisch nie ändern) | Datei `18.v32.csv` löschen |
+
 ## Live-Werte (alle 30 s)
 
 Werden nicht über die CSV-Dateien, sondern über eine **Home-Assistant-Automation**

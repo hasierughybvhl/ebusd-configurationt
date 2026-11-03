@@ -20,7 +20,7 @@ mit `--accesslevel=` (nur lesen, kein Schreibzugriff) testet.
 
 ## Was ist hier drin?
 
-Es gibt genau einen Ordner: [`vaillant/`](vaillant/). Er enthält 9 Dateien –
+Es gibt genau einen Ordner: [`vaillant/`](vaillant/). Er enthält 10 Dateien –
 mehr braucht meine Anlage nicht:
 
 | Datei | Wofür |
@@ -29,6 +29,7 @@ mehr braucht meine Anlage nicht:
 | `08.hmu.csv` | Heizungssteuerung HMU (Scan-Ergebnis: `HMU00`, SW `0607`, HW `5103`) – gehört zur VRC 720/1 |
 | `15.720.csv` | Raumregler VRC 720/1 (Scan-Ergebnis: `72000`, SW `0122`, HW `7703`) |
 | `76.vwzio.csv` | Warmwasser-/Hydraulikstation VWZ MEH 97/6 (Scan-Ergebnis: `VWZIO`, SW `0606`, HW `5103`) |
+| `18.v32.csv` | Lüftungsgerät recoVAIR VAR 360/4 E (Scan-Ergebnis: `V32`, SW `0117`, HW `9802` – `V32` ist der im Lüftungsgerät eingebaute eBUS-Koppler) |
 | `hcmode.inc`, `errors.inc` | Von den Dateien oben mit `!include` nachgeladene Zusatz-Definitionen (Betriebsarten-Text, Fehlercode-Text) |
 
 Diese Geräte-IDs stammen direkt aus dem ebusd-Log meiner Anlage
@@ -44,7 +45,7 @@ abgeschnitten. Aus `VWZIO` wird so `vwzio` → Datei `76.vwzio.csv` (**nicht**
 dieses Gerät, siehe [CHANGELOG](CHANGELOG.md)). Aus `72000` wird `720` →
 `15.720.csv`. Deshalb bitte nie Dateien "nach Gefühl" umbenennen.
 
-**Woher weiß ich, dass genau diese 9 Dateien reichen?** Die drei
+**Woher weiß ich, dass genau diese 10 Dateien reichen?** Die drei
 Geräte-Dateien (`08.hmu.csv`, `15.720.csv`, `76.vwzio.csv`) wurden geprüft, ob
 sie per `!include` weitere Dateien nachladen – das ist bei zweien der Fall
 (`hcmode.inc`, `errors.inc`), und genau die sind auch mit dabei. Es gibt keine
@@ -56,13 +57,25 @@ weiteren Abhängigkeiten.
 |---|---|
 | VRC 720/1 (Raumregler + HMU-Steuerung) | ✅ erfasst (`15.720.csv` + `08.hmu.csv`) |
 | VWZ MEH 97/6 (Hydraulikstation) | ✅ erfasst (`76.vwzio.csv`) |
-| recoVAIR VAR 360/4 E (Lüftungsgerät) | ❌ noch nicht erfasst – ist in keinem bisherigen Scan-Log als eigene `scan ..:`-Zeile aufgetaucht, echte Bus-ID unbekannt |
+| recoVAIR VAR 360/4 E (Lüftungsgerät) | 🧪 neu erfasst (`18.v32.csv`) – ist das Gerät an Adresse `18`, siehe unten; im Log noch bestätigen |
 | VWL 75/6 A 230V S2 (Wärmepumpen-Außeneinheit) | ❌ noch nicht erfasst – ebenfalls in keinem bisherigen Scan-Log aufgetaucht |
-| unbekanntes Gerät an Adresse `18` (meldet sich als `V32`, SW `0117`, HW `9802`) | ❌ ungeklärt – dafür existiert auch im offiziellen Original-Projekt keine Konfigurationsdatei |
 
-Für recoVAIR und die Wärmepumpen-Außeneinheit fehlt noch ein vollständiger
+**Das "unbekannte Gerät" an Adresse `18` ist das Lüftungsgerät.** Es meldet
+sich nicht mit seinem eigenen Namen, sondern mit dem des eingebauten
+eBUS-Kopplers "VR 32" (daher `V32`). Genau diese Kombination
+(`V32`, SW `0117`, HW `9802`) haben andere Nutzer mit einer
+recoVAIR VAR 360/4 E gemeldet – dort nur auf Adresse `38` statt `18`, was
+nur von der Einstellung am Koppler abhängt. Belege:
+[ebusd-configuration Issue #151](https://github.com/john30/ebusd-configuration/issues/151),
+[Issue #534](https://github.com/john30/ebusd-configuration/issues/534),
+[Pull Request #691](https://github.com/john30/ebusd-configuration/pull/691)
+(dort wird `38.v32` auf die recoVAIR-Definition `08.recov` umgeleitet und
+liefert echte Lüftungswerte; im Original-Projekt noch nicht übernommen).
+`18.v32.csv` ist deshalb eine Kopie dieser recoVAIR-Definition.
+
+Für die Wärmepumpen-Außeneinheit fehlt noch ein vollständiger
 `--scanconfig`-Lauf, in dem sie mit einer eigenen `scan ..:`-Zeile auftauchen
-(so wie es bei den anderen drei Geräten der Fall war). Erst mit der echten
+(so wie es bei den anderen Geräten der Fall war). Erst mit der echten
 gemeldeten ID lässt sich die passende Datei zuverlässig bestimmen – raten
 nach Modellname hätte schon einmal zu genau den Fehlern geführt, die am
 Anfang dieses Projekts standen.
@@ -75,8 +88,9 @@ Anfang dieses Projekts standen.
    `addon_configs\2ad9b828_ebusd\vaillant-lokal\` navigieren und den alten
    `vaillant`-Ordner dort durch den neuen ersetzen (überschreiben lassen).
 4. Das ebusd-Add-on in Home Assistant neu starten.
-5. Im Log-Tab des Add-ons prüfen: bei den drei Geräte-Dateien sollte jetzt
-   `found messages: ...` stehen statt einer Fehlermeldung.
+5. Im Log-Tab des Add-ons prüfen: bei den vier Geräte-Dateien sollte jetzt
+   `found messages: ...` stehen statt einer Fehlermeldung – bei Adresse 18
+   also `loaded "vaillant/18.v32.csv"` statt `no file from vaillant with prefix 18`.
 
 ## Was wird wie oft abgefragt?
 
