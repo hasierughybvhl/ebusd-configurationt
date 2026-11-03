@@ -7,6 +7,8 @@ temps2,SIN,,°C,temperature
 tempv,EXP,,°C,temperature
 temp2,D2B,,°C,temperature
 percent0,UCH,,%,percentage
+percent,D2C,,%,percentage
+percents,SCH,,%,percentage
 press,FLT,,bar,pressure
 pressv,EXP,,bar,pressure
 date,HDA:3,,,date

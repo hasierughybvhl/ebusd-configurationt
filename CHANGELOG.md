@@ -10,6 +10,18 @@ werden hier festgehalten. Format angelehnt an
 - **MINOR** steigt, wenn Geräte-Dateien hinzukommen oder ersetzt werden.
 - **PATCH** steigt bei kleinen Korrekturen an bestehenden Dateien.
 
+## [1.2.0] - 2026-11-03
+
+### Neu
+- `18.v32.csv`: Das bisher "unbekannte Gerät" an Adresse 18 (`V32`, SW `0117`,
+  HW `9802`) ist das Lüftungsgerät recoVAIR VAR 360/4 E bzw. dessen
+  eingebauter eBUS-Koppler VR 32. Belegt durch gleiche Scan-Kennung in
+  john30/ebusd-configuration Issue #151, #534 und Pull Request #691. Die
+  Datei ist eine Kopie der Original-recoVAIR-Definition `08.recov.csv`.
+  Details und Auswirkung auf die Abfrage-Runde: [`ABFRAGEN.md`](ABFRAGEN.md), Kennung N2.
+- `_templates.csv`: Vorlagen `percent` und `percents` ergänzt, die die
+  recoVAIR-Definition braucht.
+
 ## [1.1.0] - 2026-10-20
 
 ### Geändert
